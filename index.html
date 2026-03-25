@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legendary Kingdoms - Asistente de Campaña</title>
+    <style>
+        /* Variables por defecto (Tema Libro 1 - Marrón) */
+        :root {
+            --primary: #5d4037;
+            --secondary: #d84315;
+            --bg: #efebe9;
+            --text: #3e2723;
+            --border: #d7ccc8;
+            --surface: #ffffff;
+            --money-bg: #fbe9e7;
+        }
+
+        /* Tema Libro 2 - Gris */
+        body.theme-book2 {
+            --primary: #455a64;
+            --secondary: #546e7a;
+            --bg: #eceff1;
+            --text: #263238;
+            --border: #cfd8dc;
+            --money-bg: #e8eaed;
+        }
+
+        /* Tema Libro 3 - Azul */
+        body.theme-book3 {
+            --primary: #0277bd;
+            --secondary: #00838f;
+            --bg: #e1f5fe;
+            --text: #01579b;
+            --border: #b3e5fc;
+            --money-bg: #e0f7fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; transition: background-color 0.3s; }
+
+        /* Navegación Fija */
+        nav {
+            background-color: var(--primary); color: white;
+            padding: 0.8rem 2rem; display: flex;
+            justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+        .brand { display: flex; align-items: center; gap: 1rem; }
+        .brand img { height: 60px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        nav h1 { font-size: 1.5rem; margin: 0; }
+        .book-select {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);
+            padding: 0.4rem; border-radius: 4px; outline: none; font-weight: bold;
+        }
+        .book-select option { color: black; }
+
+        .nav-buttons button {
+            background-color: transparent; border: 1px solid white;
+            color: white; padding: 0.5rem 1rem; margin-left: 0.5rem;
+            cursor: pointer; border-radius: 4px; transition: 0.3s;
+        }
+        .nav-buttons button:hover { background-color: white; color: var(--primary); }
+
+        /* Layout Principal: 3 Columnas */
+        .app-layout {
+            display: flex; max-width: 1600px; margin: 2rem auto; padding: 0 1rem; gap: 2rem;
+            align-items: flex-start;
+        }
+        .sidebar-left, .sidebar-right { width: 300px; flex-shrink: 0; position: sticky; top: 100px; }
+        .main-content { flex-grow: 1; min-width: 0; }
+        
+        /* Secciones y Pestañas */
+        .section-box { background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--primary); }
+        
+        /* Pestañas Principales (A todo el ancho, sin scroll) */
+        .tabs.main-tabs { 
+            display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; 
+            flex-wrap: nowrap; overflow: hidden; gap: 4px;
+        }
+        .tabs.main-tabs .tab {
+            flex: 1; text-align: center; white-space: normal; padding: 0.8rem 0.5rem; margin-right: 0;
+            display: flex; align-items: center; justify-content: center; line-height: 1.2;
+        }
+        
+        /* Pestañas de Personajes */
+        .tabs.char-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; flex-wrap: wrap; }
+        
+        .tab { 
+            padding: 0.8rem 1.5rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; 
+            background: rgba(0,0,0,0.05); margin-right: 5px; border-radius: 4px 4px 0 0; transition: 0.2s; 
+            user-select: none;
+        }
+        .tab.active { background: var(--surface); border-color: var(--border); font-weight: bold; border-bottom: 1px solid var(--surface); margin-bottom: -1px; color: var(--primary); }
+        .tab.dead { text-decoration: line-through; opacity: 0.6; color: #c0392b; background: #fadbd8; }
+        .tab.add-tab { background: #27ae60; color: white; font-weight: bold; border-radius: 4px 4px 0 0; }
+        .tab.add-tab:hover { background: #2ecc71; }
+        .tab.drag-over { border: 2px dashed var(--secondary); opacity: 0.8; }
+
+        /* Botón Eliminar Personaje (Discreto) */
+        .btn-delete-char { 
+            background: transparent; color: #7f8c8d; border: 1px solid transparent; 
+            padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
+            transition: 0.2s; text-decoration: underline; 
+        }
+        .btn-delete-char:hover { color: #c0392b; background: rgba(192, 57, 43, 0.1); }
+        
+        /* Formulario de Personajes */
+        .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem; }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 4px;
+            background: var(--surface); color: var(--text);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        
+        table.stats-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        table.stats-table th, table.stats-table td { border: 1px solid var(--border); padding: 0.5rem; text-align: center; }
+        table.stats-table th { background-color: var(--bg); color: var(--primary); }
+        table.stats-table input { width: 60px; text-align: center; }
+
+        .spellbook { display: none; background: rgba(0,0,0,0.02); padding: 1rem; border: 1px dashed var(--primary); border-radius: 4px; margin-top: 1rem; }
+        .spellbook.active { display: block; }
+
+        .death-checkbox-container {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.85rem; font-weight: normal; color: #7f8c8d;
+            cursor: pointer; padding: 5px 10px; border-radius: 4px;
+            background: rgba(0,0,0,0.03); border: 1px solid var(--border);
+            margin-top: 15px; transition: 0.2s;
+        }
+        .death-checkbox-container:hover { background: rgba(0,0,0,0.06); }
+
+        /* Códigos de Progresión (Columna Izquierda) */
+        .codes-section { padding: 1.5rem; }
+        .codes-section h2 { font-size: 1.2rem; }
+        .codes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 5px; }
+        .code-box {
+            border: 1px solid var(--border); text-align: center; padding: 0.5rem 0;
+            font-size: 0.8rem; cursor: pointer; user-select: none; border-radius: 3px; background: var(--surface);
+            transition: 0.2s;
+        }
+        .code-box.checked { background: var(--primary); color: white; text-decoration: line-through; border-color: var(--primary); }
+
+        /* Dinero y Bóveda (Columna Derecha) */
+        .money-section { padding: 1.5rem; }
+        .money-section h2 { font-size: 1.2rem; }
+        .money-input-group { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; background: var(--money-bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
+        .money-input-group input { width: 120px; font-size: 1.2rem; border: 1px solid var(--primary); font-weight: bold; }
+        .vault-toggle-label { font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--primary); }
+        .vault-container { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
+        .vault-container.active { display: block; }
+        .vault-container textarea { min-height: 200px; }
+
+        /* Flota y Ejércitos */
+        .fleet-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .fleet-table th, .fleet-table td { border: 1px solid var(--border); padding: 0.5rem; }
+        .fleet-table th { background: var(--bg); color: var(--primary); }
+        .btn-add, .btn-delete { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-add { background: var(--secondary); color: white; }
+        .btn-delete { background: #7f8c8d; color: white; }
+
+        /* Dado D6 Widget */
+        .dice-widget {
+            position: fixed; bottom: 20px; right: 20px; background: var(--surface);
+            border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; width: 280px;
+        }
+        .dice-widget h3 { margin-bottom: 0.5rem; font-size: 1rem; border-bottom: none; color: var(--primary); }
+        .quick-dice { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
+        .quick-dice button { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0; cursor: pointer; border-radius: 3px; font-size: 0.85rem; font-weight: 600; transition: 0.2s;}
+        .quick-dice button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .dice-controls { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; border-top: 1px solid var(--border); padding-top: 10px; }
+        .dice-controls input { width: 60px; }
+        .dice-controls button { background: var(--secondary); color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer; flex-grow: 1; font-weight: bold; }
+        .dice-results { font-size: 0.9rem; margin-top: 0.5rem; max-height: 80px; overflow-y: auto; }
+        .dice-total { font-weight: bold; font-size: 1.1rem; color: var(--secondary); text-align: center; margin-top: 0.5rem; }
+
+        /* Responsividad */
+        @media (max-width: 1100px) {
+            .app-layout { flex-direction: column; }
+            .sidebar-left, .sidebar-right { width: 100%; position: static; }
+            .tabs.main-tabs { overflow-x: auto; flex-wrap: nowrap; overflow-y: hidden; }
+            .tabs.main-tabs .tab { padding: 0.8rem; font-size: 0.9rem; flex: 0 0 auto; }
+        }
+        @media (max-width: 768px) {
+            .grid-2col { grid-template-columns: 1fr; }
+            .fleet-table { display: block; overflow-x: auto; }
+            nav { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .brand { justify-content: space-between; flex-wrap: wrap; }
+            .nav-buttons { display: flex; justify-content: space-between; }
+            .nav-buttons button { margin: 0; flex-grow: 1; margin: 0 0.2rem; padding: 0.5rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body class="theme-book1">
+
+    <nav>
+        <div class="brand">
+            <img id="book-cover" src="1-el valle de los huesos.jpg" alt="Portada de Legendary Kingdoms">
+            <h1>Legendary Kingdoms</h1>
+            <select class="book-select" id="book-selector" onchange="changeBook(this.value)">
+                <option value="1">Libro 1: El Valle de los Huesos</option>
+                <option value="2">Libro 2: Corona y Torre</option>
+                <option value="3">Libro 3: Piratas de las Islas Fragmentadas</option>
+            </select>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="saveCampaign()">Guardar</button>
+            <button onclick="document.getElementById('file-upload').click()">Cargar</button>
+            <button onclick="newCampaign()">Nueva Campaña</button>
+            <input type="file" id="file-upload" style="display:none" accept=".json" onchange="loadCampaign(event)">
+        </div>
+    </nav>
+
+    <div class="app-layout">
+        <aside class="sidebar-left">
+            <div class="section-box codes-section">
+                <h2 id="codes-title">Códigos</h2>
+                <div class="codes-grid" id="active-grid"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="tabs main-tabs">
+                <div class="tab main-tab" id="tab-personajes" onclick="switchMainTab('personajes')">Hojas de Personaje</div>
+                <div class="tab main-tab" id="tab-notas" onclick="switchMainTab('notas')">Notas de la Aventura</div>
+                <div class="tab main-tab" id="tab-flota" onclick="switchMainTab('flota')">Gestión de Flota</div>
+                <div class="tab main-tab" id="tab-ejercitos" onclick="switchMainTab('ejercitos')">Gestión de Ejércitos</div>
+            </div>
+
+            <div id="section-personajes" class="section-box">
+                <div class="tabs char-tabs" id="char-tabs"></div>
+                <div id="character-content"></div>
+            </div>
+
+            <div id="section-notas" class="section-box" style="display: none;">
+                <h2>Notas de la Aventura</h2>
+                <textarea id="global-notes" placeholder="Anota aquí rumores, misiones, ubicaciones importantes..." oninput="updateNotes(this.value)" style="min-height: 300px;"></textarea>
+            </div>
+
+            <div id="section-flota" class="section-box" style="display: none;">
+                <h2>Gestión de Flota</h2>
+                <table class="fleet-table" id="fleet-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Barco</th>
+                            <th>Combate</th>
+                            <th>Salud</th>
+                            <th>Carga</th>
+                            <th>Localización</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fleet-body"></tbody>
+                </table>
+                <button class="btn-add" onclick="addShip()">+ Añadir Barco</button>
+            </div>
+
+            <div id="section-ejercitos" class="section-box" style="display: none;">
+                <h2>Gestión de Ejércitos</h2>
+                <table class="fleet-table" id="army-table">
+                    <thead>
+                        <tr>
+                            <th>Unidad</th>
+                            <th>Fuerza</th>
+                            <th>Moral</th>
+                            <th>Guarnición</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="army-body"></tbody>
+                </table>
+                <button class="btn-add" onclick="addArmy()">+ Añadir Unidad</button>
+            </div>
+
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="section-box money-section">
+                <h2>Dinero</h2>
+                <div class="money-input-group">
+                    <input type="number" id="global-money-input" value="0" oninput="updateMoney(this.value)">
+                    <span>Monedas</span>
+                </div>
+                <div>
+                    <label class="vault-toggle-label">
+                        <input type="checkbox" id="vault-toggle" onchange="toggleVault(this.checked)">
+                        📦 Bóveda
+                    </label>
+                </div>
+                <div class="vault-container" id="vault-container">
+                    <textarea id="vault-notes" placeholder="Anota aquí objetos comunes, reliquias, llaves, gemas..." oninput="updateVault(this.value)"></textarea>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="dice-widget">
+        <h3>Lanzador D6</h3>
+        
+        <div class="quick-dice">
+            <button onclick="rollQuickD6(1)">1d6</button>
+            <button onclick="rollQuickD6(2)">2d6</button>
+            <button onclick="rollQuickD6(3)">3d6</button>
+            <button onclick="rollQuickD6(4)">4d6</button>
+            <button onclick="rollQuickD6(5)">5d6</button>
+            <button onclick="rollQuickD6(6)">6d6</button>
+            <button onclick="rollQuickD6(7)">7d6</button>
+            <button onclick="rollQuickD6(8)">8d6</button>
+            <button onclick="rollQuickD6(9)">9d6</button>
+            <button onclick="rollQuickD6(10)">10d6</button>
+        </div>
+
+        <div class="dice-controls">
+            <input type="number" id="dice-count" min="1" max="20" value="1" title="Cant. de dados">
+            <button onclick="rollD6()">¡Lanzar!</button>
+        </div>
+        <div class="dice-results" id="dice-results"></div>
+        <div class="dice-total" id="dice-total"></div>
+    </div>
+
+    <script>
+        const officialCharacters = [
+            "Sar Jessica Dayne",
+            "Lord Ti'Quon",
+            "Tasha",
+            "Amelia Pass-Dayne",
+            "Akihiro",
+            "Brash"
+        ];
+        const magesList = ["Lord Ti'Quon", "Amelia Pass-Dayne"];
+
+        const getNewCharacterTemplate = () => ({
+            name: "", hp: 0, maxHp: 0, armor: 0, isDead: false,
+            stats: { Combate: [0,0], Sigilo: [0,0], Sabiduría: [0,0], Supervivencia: [0,0], Carisma: [0,0] },
+            equipment: Array(10).fill(""),
+            spells: Array(6).fill(null).map(() => ({ name: "", recharge: "", ready: false })),
+            notes: ""
+        });
+
+        const defaultState = {
+            activeMainTab: 'personajes',
+            currentBook: 1,
+            money: 0,
+            isVaultOpen: false,
+            vaultNotes: "",
+            notes: "",
+            activeTab: 0,
+            codes: { A: [], B: [], C: [] },
+            fleet: [],
+            armies: [],
+            characters: Array(4).fill(null).map(() => getNewCharacterTemplate())
+        };
+
+        let state = JSON.parse(localStorage.getItem('lk_campaign')) || JSON.parse(JSON.stringify(defaultState));
+        
+        // Retrocompatibilidad
+        if (!state.activeMainTab) state.activeMainTab = 'personajes';
+        if (state.isVaultOpen === undefined) state.isVaultOpen = false;
+        if (state.vaultNotes === undefined) state.vaultNotes = "";
+        if (!state.currentBook) state.currentBook = 1; 
+        if (!state.armies) state.armies = [];
+        state.characters.forEach(char => {
+            if (char.maxHp === undefined) char.maxHp = char.hp || 0;
+            if (char.isDead === undefined) char.isDead = false;
+        });
+        if(state.activeTab >= state.characters.length) state.activeTab = 0;
+
+        function autoSave() {
+            localStorage.setItem('lk_campaign', JSON.stringify(state));
+        }
+
+        // --- SISTEMA DE PESTAÑAS PRINCIPALES ---
+        function switchMainTab(tabId) {
+            state.activeMainTab = tabId;
+            autoSave();
+            renderMainTabs();
+        }
+
+        function renderMainTabs() {
+            const sections = ['personajes', 'notas', 'flota', 'ejercitos'];
+            sections.forEach(sec => {
+                document.getElementById('section-' + sec).style.display = (state.activeMainTab === sec) ? 'block' : 'none';
+                document.getElementById('tab-' + sec).classList.toggle('active', state.activeMainTab === sec);
+            });
+        }
+
+        // --- SISTEMA DE LIBROS Y TEMAS ---
+        function changeBook(bookId) {
+            state.currentBook = parseInt(bookId);
+            autoSave();
+            applyTheme();
+            renderCodes();
+        }
+
+        function applyTheme() {
+            document.body.className = `theme-book${state.currentBook}`;
+            document.getElementById('book-selector').value = state.currentBook;
+            
+            const coverImg = document.getElementById('book-cover');
+            if(state.currentBook === 1) coverImg.src = '1-el valle de los huesos.jpg';
+            else if(state.currentBook === 2) coverImg.src = '2-corona y torre.jpg';
+            else if(state.currentBook === 3) coverImg.src = '3-piratas de las islas fragmentadas.jpg';
+        }
+
+        // --- DINERO Y BÓVEDA ---
+        function updateMoney(val) { state.money = val; autoSave(); }
+        function toggleVault(isOpen) { 
+            state.isVaultOpen = isOpen; 
+            document.getElementById('vault-container').classList.toggle('active', isOpen);
+            autoSave(); 
+        }
+        function updateVault(val) { state.vaultNotes = val; autoSave(); }
+
+        // --- SISTEMA DE PESTAÑAS DE PERSONAJE (DRAG & DROP) ---
+        let draggedTabIndex = null;
+
+        function renderCharacterTabs() {
+            const tabsContainer = document.getElementById('char-tabs');
+            tabsContainer.innerHTML = '';
+            
+            state.characters.forEach((char, index) => {
+                const div = document.createElement('div');
+                div.className = `tab char-tab ${state.activeTab === index ? 'active' : ''} ${char.isDead ? 'dead' : ''}`;
+                div.textContent = char.name || `Personaje ${index + 1}`;
+                div.dataset.index = index;
+                div.draggable = true;
+                
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('dragenter', handleDragEnter);
+                div.addEventListener('dragleave', handleDragLeave);
+                div.addEventListener('drop', handleDrop);
+                div.addEventListener('dragend', handleDragEnd);
+
+                div.onclick = () => { state.activeTab = index; autoSave(); renderAll(); };
+                tabsContainer.appendChild(div);
+            });
+
+            const livingCount = state.characters.filter(c => !c.isDead).length;
+            if (livingCount < 4) {
+                const addBtn = document.createElement('div');
+                addBtn.className = 'tab add-tab';
+                addBtn.textContent = '+ Añadir';
+                addBtn.title = 'Añadir un nuevo personaje';
+                addBtn.onclick = addCharacter;
+                tabsContainer.appendChild(addBtn);
+            }
+        }
+
+        function handleDragStart(e) {
+            draggedTabIndex = parseInt(this.dataset.index);
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => this.style.opacity = '0.4', 0);
+        }
+
+        function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
+        function handleDragEnter(e) { if(this !== e.target) this.classList.add('drag-over'); }
+        function handleDragLeave(e) { this.classList.remove('drag-over'); }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            
+            const targetIndex = parseInt(this.dataset.index);
+            
+            if (draggedTabIndex !== null && draggedTabIndex !== targetIndex) {
+                const char = state.characters.splice(draggedTabIndex, 1)[0];
+                state.characters.splice(targetIndex, 0, char);
+                
+                if (state.activeTab === draggedTabIndex) {
+                    state.activeTab = targetIndex;
+                } else if (state.activeTab > draggedTabIndex && state.activeTab <= targetIndex) {
+                    state.activeTab--;
+                } else if (state.activeTab < draggedTabIndex && state.activeTab >= targetIndex) {
+                    state.activeTab++;
+                }
+                
+                autoSave();
+                renderAll();
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.style.opacity = '1';
+            const tabs = document.querySelectorAll('.char-tab');
+            tabs.forEach(tab => tab.classList.remove('drag-over'));
+            draggedTabIndex = null;
+        }
+
+        function addCharacter() {
+            const livingCount = state.characters.filter(c => !c.isDead).length;
+            if (livingCount >= 4) {
+                alert("Ya tienes 4 personajes vivos. No puedes añadir más.");
+                return;
+            }
+            
+            const newChar = getNewCharacterTemplate();
+            const firstDeadIndex = state.characters.findIndex(c => c.isDead);
+            
+            if (firstDeadIndex !== -1) {
+                state.characters.splice(firstDeadIndex, 0, newChar);
+                state.activeTab = firstDeadIndex;
+            } else {
+                state.characters.push(newChar);
+                state.activeTab = state.characters.length - 1;
+            }
+            
+            autoSave();
+            renderAll();
+        }
+
+        function deleteCharacter(idx) {
+            if (confirm("¿Estás seguro de que quieres eliminar esta pestaña de personaje de forma permanente?")) {
+                state.characters.splice(idx, 1);
+                if (state.activeTab >= state.characters.length) {
+                    state.activeTab = Math.max(0, state.characters.length - 1);
+                }
+                autoSave();
+                renderAll();
+            }
+        }
+
+        function toggleDeath(idx, isDead) {
+            if (!isDead) {
+                const livingCount = state.characters.filter(c => !c.isDead).length;
+                if (livingCount >= 4) {
+                    alert("Ya hay 4 personajes vivos. No puedes revivir a este personaje sin antes matar a otro.");
+                    renderAll(); 
+                    return;
+                }
+            }
+
+            state.characters[idx].isDead = isDead;
+
+            if (isDead) {
+                const deadChar = state.characters.splice(idx, 1)[0];
+                state.characters.push(deadChar);
+                state.activeTab = state.characters.length - 1;
+            }
+
+            autoSave();
+            renderAll();
+        }
+
+        function renderActiveCharacter() {
+            const container = document.getElementById('character-content');
+            
+            if (state.characters.length === 0) {
+                container.innerHTML = '<p>No hay personajes. Añade uno para empezar.</p>';
+                return;
+            }
+
+            const char = state.characters[state.activeTab];
+            const cIndex = state.activeTab;
+            const isMage = magesList.includes(char.name);
+
+            let optionsHtml = '';
+            officialCharacters.forEach(name => {
+                optionsHtml += `<option value="${name}">`;
+            });
+
+            let statsHtml = '';
+            for (const [stat, vals] of Object.entries(char.stats)) {
+                statsHtml += `
+                    <tr>
+                        <td>${stat}</td>
+                        <td><input type="number" value="${vals[0]}" oninput="updateStat(${cIndex}, '${stat}', 0, this.value)"></td>
+                        <td><input type="number" value="${vals[1]}" oninput="updateStat(${cIndex}, '${stat}', 1, this.value)"></td>
+                    </tr>`;
+            }
+
+            let equipHtml = '';
+            char.equipment.forEach((item, i) => {
+                equipHtml += `<div class="form-group"><input type="text" placeholder="Espacio ${i+1}" value="${item}" oninput="updateEquip(${cIndex}, ${i}, this.value)"></div>`;
+            });
+
+            let spellsHtml = '';
+            char.spells.forEach((spell, i) => {
+                const rechargeValue = spell.recharge !== undefined ? spell.recharge : "";
+                spellsHtml += `
+                    <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
+                        <input type="text" placeholder="Nombre del Hechizo" value="${spell.name}" oninput="updateSpellName(${cIndex}, ${i}, this.value)" style="flex-grow:1;">
+                        <input type="text" placeholder="Recarga" value="${rechargeValue}" oninput="updateSpellRecharge(${cIndex}, ${i}, this.value)" style="width: 80px;" title="Coste/Valor de Recarga">
+                        <label style="margin:0; white-space:nowrap;"><input type="checkbox" ${spell.ready ? 'checked' : ''} onchange="updateSpellReady(${cIndex}, ${i}, this.checked)"> Disponible</label>
+                    </div>`;
+            });
+
+            container.innerHTML = `
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <button class="btn-delete-char" onclick="deleteCharacter(${cIndex})" title="Eliminar este personaje permanentemente">🗑️ Eliminar pestaña</button>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div class="form-group">
+                            <label>Nombre del Personaje</label>
+                            <input type="text" list="official-chars-list" value="${char.name}" placeholder="Elige o escribe un nombre..." onchange="updateCharName(${cIndex}, this.value)">
+                            <datalist id="official-chars-list">${optionsHtml}</datalist>
+                        </div>
+
+                        <div style="display:flex; gap: 1rem; margin-top: 1rem;">
+                            <div class="form-group" style="flex: 2;">
+                                <label>Puntos de Salud (Actual / Máx)</label>
+                                <div style="display:flex; align-items:center; gap: 0.5rem;">
+                                    <input type="number" value="${char.hp}" oninput="updateCharProp(${cIndex}, 'hp', this.value)" title="Salud Actual">
+                                    <span style="font-weight:bold; font-size:1.2rem;">/</span>
+                                    <input type="number" value="${char.maxHp}" oninput="updateCharProp(${cIndex}, 'maxHp', this.value)" title="Salud Máxima">
+                                </div>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Armadura</label>
+                                <input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)">
+                            </div>
+                        </div>
+
+                        <table class="stats-table">
+                            <thead><tr><th>Atributo</th><th>Habilidad</th><th>Modificado</th></tr></thead>
+                            <tbody>${statsHtml}</tbody>
+                        </table>
+                        
+                        <div class="spellbook ${isMage ? 'active' : ''}">
+                            <h3 style="margin-bottom:10px; font-size:1rem; color: var(--primary);">Libro de Hechizos</h3>
+                            ${spellsHtml}
+                        </div>
+
+                        <div style="text-align: right;">
+                            <label class="death-checkbox-container" title="Marcar este personaje como fallecido">
+                                <input type="checkbox" ${char.isDead ? 'checked' : ''} onchange="toggleDeath(${cIndex}, this.checked)">
+                                💀 Personaje Fallecido
+                            </label>
+                        </div>
+
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom:1rem; font-size:1rem; color: var(--primary);">Equipamiento (10 espacios)</h3>
+                        ${equipHtml}
+                        <div class="form-group" style="margin-top:1rem;">
+                            <label>Notas de personaje</label>
+                            <textarea oninput="updateCharProp(${cIndex}, 'notes', this.value)">${char.notes}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNCIONES DE ACTUALIZACIÓN ---
+        function updateCharName(idx, val) { state.characters[idx].name = val; renderCharacterTabs(); renderActiveCharacter(); autoSave(); }
+        function updateCharProp(idx, prop, val) { state.characters[idx][prop] = val; autoSave(); }
+        function updateStat(idx, stat, col, val) { state.characters[idx].stats[stat][col] = val; autoSave(); }
+        function updateEquip(idx, eqIdx, val) { state.characters[idx].equipment[eqIdx] = val; autoSave(); }
+        function updateSpellName(idx, sIdx, val) { state.characters[idx].spells[sIdx].name = val; autoSave(); }
+        function updateSpellRecharge(idx, sIdx, val) { 
+            if(state.characters[idx].spells[sIdx].recharge === undefined) state.characters[idx].spells[sIdx].recharge = "";
+            state.characters[idx].spells[sIdx].recharge = val; 
+            autoSave(); 
+        }
+        function updateSpellReady(idx, sIdx, val) { state.characters[idx].spells[sIdx].ready = val; autoSave(); }
+        function updateNotes(val) { state.notes = val; autoSave(); }
+
+        // --- CÓDIGOS DE PROGRESIÓN ---
+        function renderCodes() {
+            const container = document.getElementById('active-grid');
+            const title = document.getElementById('codes-title');
+            container.innerHTML = '';
+            
+            let prefix = 'A';
+            let max = 100;
+
+            if(state.currentBook === 1) { prefix = 'A'; max = 100; title.innerText = 'Libro 1 (A1 - A100)'; }
+            else if(state.currentBook === 2) { prefix = 'B'; max = 110; title.innerText = 'Libro 2 (B1 - B110)'; }
+            else if(state.currentBook === 3) { prefix = 'C'; max = 100; title.innerText = 'Libro 3 (C1 - C100)'; }
+
+            for (let i = 1; i <= max; i++) {
+                const code = `${prefix}${i}`;
+                const isChecked = state.codes[prefix].includes(i);
+                const div = document.createElement('div');
+                div.className = `code-box ${isChecked ? 'checked' : ''}`;
+                div.textContent = code;
+                div.onclick = () => toggleCode(prefix, i, div);
+                container.appendChild(div);
+            }
+        }
+
+        function toggleCode(prefix, num, el) {
+            const arr = state.codes[prefix];
+            const idx = arr.indexOf(num);
+            if (idx > -1) { arr.splice(idx, 1); el.classList.remove('checked'); } 
+            else { arr.push(num); el.classList.add('checked'); }
+            autoSave();
+        }
+
+        // --- SISTEMAS DE FLOTA Y EJÉRCITO ---
+        function renderFleet() {
+            const tbody = document.getElementById('fleet-body');
+            tbody.innerHTML = '';
+            state.fleet.forEach((ship, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><input type="text" value="${ship.name}" oninput="updateFleet(${i}, 'name', this.value)" style="width:100%"></td>
+                        <td><input type="number" value="${ship.combat}" oninput="updateFleet(${i}, 'combat', this.value)"></td>
+                        <td><input type="number" value="${ship.hp}" oninput="updateFleet(${i}, 'hp', this.value)"></td>
+                        <td><input type="number" value="${ship.cargo}" oninput="updateFleet(${i}, 'cargo', this.value)"></td>
+                        <td><input type="text" value="${ship.location}" oninput="updateFleet(${i}, 'location', this.value)" style="width:100%"></td>
+                        <td><button class="btn-delete" onclick="removeShip(${i})">Borrar</button></td>
+                    </tr>
+                `;
+            });
+        }
+        function addShip() { state.fleet.push({ name: "", combat: 0, hp: 0, cargo: 0, location: "" }); renderFleet(); autoSave(); }
+        function updateFleet(idx, prop, val) { state.fleet[idx][prop] = val; autoSave(); }
+        function removeShip(idx) { if(confirm('¿Eliminar este barco?')){ state.fleet.splice(idx, 1); renderFleet(); autoSave(); } }
+
+        function renderArmies() {
+            const tbody = document.getElementById('army-body');
+            tbody.innerHTML = '';
+            state.armies.forEach((army, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><input type="text" value="${army.unit}" oninput="updateArmy(${i}, 'unit', this.value)" style="width:100%"></td>
+                        <td><input type="number" value="${army.force}" oninput="updateArmy(${i}, 'force', this.value)"></td>
+                        <td><input type="number" value="${army.morale}" oninput="updateArmy(${i}, 'morale', this.value)"></td>
+                        <td><input type="text" value="${army.garrison}" oninput="updateArmy(${i}, 'garrison', this.value)" style="width:100%"></td>
+                        <td><button class="btn-delete" onclick="removeArmy(${i})">Borrar</button></td>
+                    </tr>
+                `;
+            });
+        }
+        function addArmy() { state.armies.push({ unit: "", force: 0, morale: 0, garrison: "" }); renderArmies(); autoSave(); }
+        function updateArmy(idx, prop, val) { state.armies[idx][prop] = val; autoSave(); }
+        function removeArmy(idx) { if(confirm('¿Eliminar esta unidad?')){ state.armies.splice(idx, 1); renderArmies(); autoSave(); } }
+
+        // --- DADOS ---
+        function rollQuickD6(count) {
+            document.getElementById('dice-count').value = count;
+            rollD6();
+        }
+
+        function rollD6() {
+            const count = parseInt(document.getElementById('dice-count').value) || 1;
+            const resDiv = document.getElementById('dice-results');
+            const totDiv = document.getElementById('dice-total');
+            
+            if(count < 1 || count > 20) { alert("Elige entre 1 y 20 dados."); return; }
+
+            let results = [];
+            let total = 0;
+            for(let i=0; i<count; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll);
+                total += roll;
+            }
+
+            resDiv.innerHTML = `Tiradas: [ ${results.join(', ')} ]`;
+            totDiv.innerHTML = `Suma Total: ${total}`;
+        }
+
+        // --- GUARDAR Y CARGAR ---
+        function saveCampaign() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            const date = new Date().toISOString().slice(0,10);
+            downloadAnchorNode.setAttribute("download", `legendary_kingdoms_save_${date}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function loadCampaign(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const loadedState = JSON.parse(e.target.result);
+                    state = loadedState;
+                    
+                    if (!state.activeMainTab) state.activeMainTab = 'personajes';
+                    if (state.isVaultOpen === undefined) state.isVaultOpen = false;
+                    if (state.vaultNotes === undefined) state.vaultNotes = "";
+                    if (!state.currentBook) state.currentBook = 1;
+                    if (!state.armies) state.armies = [];
+                    state.characters.forEach(char => {
+                        if (char.maxHp === undefined) char.maxHp = char.hp || 0;
+                        if (char.isDead === undefined) char.isDead = false;
+                    });
+                    if(state.activeTab >= state.characters.length) state.activeTab = 0;
+
+                    autoSave();
+                    renderAll();
+                    alert('Campaña cargada con éxito.');
+                } catch (err) {
+                    alert('Error al leer el archivo. Asegúrate de que es un archivo de guardado válido.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ""; 
+        }
+
+        function newCampaign() {
+            if(confirm("¿Estás seguro de que quieres borrar todos los datos y empezar una nueva campaña? Los datos no guardados se perderán.")){
+                state = JSON.parse(JSON.stringify(defaultState));
+                autoSave();
+                renderAll();
+            }
+        }
+
+        function renderAll() {
+            document.getElementById('global-money-input').value = state.money;
+            document.getElementById('vault-toggle').checked = state.isVaultOpen;
+            document.getElementById('vault-container').classList.toggle('active', state.isVaultOpen);
+            document.getElementById('vault-notes').value = state.vaultNotes;
+            
+            document.getElementById('global-notes').value = state.notes;
+            
+            applyTheme(); 
+            renderMainTabs();
+            renderCharacterTabs();
+            renderActiveCharacter();
+            renderCodes(); 
+            renderFleet();
+            renderArmies(); 
+        }
+
+        window.onload = renderAll;
+    </script>
+</body>
+</html>
