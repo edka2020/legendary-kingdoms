@@ -74,7 +74,7 @@
         
         /* Secciones y Pestañas */
         .section-box { background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--primary); }
+        h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--primary); font-size: 1.2rem; }
         
         /* Pestañas Principales (A todo el ancho, sin scroll) */
         .tabs.main-tabs { 
@@ -104,7 +104,7 @@
         .btn-delete-char { 
             background: transparent; color: #7f8c8d; border: 1px solid transparent; 
             padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
-            transition: 0.2s; text-decoration: underline; 
+            transition: 0.2s; text-decoration: underline; margin-bottom: 1rem; display: inline-block;
         }
         .btn-delete-char:hover { color: #c0392b; background: rgba(192, 57, 43, 0.1); }
         
@@ -137,7 +137,6 @@
 
         /* Códigos de Progresión (Columna Izquierda) */
         .codes-section { padding: 1.5rem; }
-        .codes-section h2 { font-size: 1.2rem; }
         .codes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 5px; }
         .code-box {
             border: 1px solid var(--border); text-align: center; padding: 0.5rem 0;
@@ -146,15 +145,14 @@
         }
         .code-box.checked { background: var(--primary); color: white; text-decoration: line-through; border-color: var(--primary); }
 
-        /* Dinero y Bóveda (Columna Derecha) */
-        .money-section { padding: 1.5rem; }
-        .money-section h2 { font-size: 1.2rem; }
-        .money-input-group { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; background: var(--money-bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
+        /* Columna Derecha (Dinero y Bóveda) */
+        .right-section { padding: 1.5rem; margin-bottom: 1.5rem; }
+        .money-input-group { display: flex; align-items: center; gap: 0.8rem; background: var(--money-bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
         .money-input-group input { width: 120px; font-size: 1.2rem; border: 1px solid var(--primary); font-weight: bold; }
-        .vault-toggle-label { font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--primary); }
+        .vault-toggle-label { font-size: 1.1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--primary); }
         .vault-container { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
         .vault-container.active { display: block; }
-        .vault-container textarea { min-height: 200px; }
+        .vault-container textarea { min-height: 250px; }
 
         /* Flota y Ejércitos */
         .fleet-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
@@ -282,18 +280,19 @@
         </main>
 
         <aside class="sidebar-right">
-            <div class="section-box money-section">
+            <div class="section-box right-section">
                 <h2>Dinero</h2>
                 <div class="money-input-group">
                     <input type="number" id="global-money-input" value="0" oninput="updateMoney(this.value)">
                     <span>Monedas</span>
                 </div>
-                <div>
-                    <label class="vault-toggle-label">
-                        <input type="checkbox" id="vault-toggle" onchange="toggleVault(this.checked)">
-                        📦 Bóveda
-                    </label>
-                </div>
+            </div>
+
+            <div class="section-box right-section">
+                <label class="vault-toggle-label">
+                    <input type="checkbox" id="vault-toggle" onchange="toggleVault(this.checked)">
+                    📦 Bóveda
+                </label>
                 <div class="vault-container" id="vault-container">
                     <textarea id="vault-notes" placeholder="Anota aquí objetos comunes, reliquias, llaves, gemas..." oninput="updateVault(this.value)"></textarea>
                 </div>
@@ -365,7 +364,6 @@
 
         let state = JSON.parse(localStorage.getItem('lk_campaign')) || JSON.parse(JSON.stringify(defaultState));
         
-        // Retrocompatibilidad
         if (!state.activeMainTab) state.activeMainTab = 'personajes';
         if (state.isVaultOpen === undefined) state.isVaultOpen = false;
         if (state.vaultNotes === undefined) state.vaultNotes = "";
@@ -381,7 +379,6 @@
             localStorage.setItem('lk_campaign', JSON.stringify(state));
         }
 
-        // --- SISTEMA DE PESTAÑAS PRINCIPALES ---
         function switchMainTab(tabId) {
             state.activeMainTab = tabId;
             autoSave();
@@ -396,7 +393,6 @@
             });
         }
 
-        // --- SISTEMA DE LIBROS Y TEMAS ---
         function changeBook(bookId) {
             state.currentBook = parseInt(bookId);
             autoSave();
@@ -414,7 +410,6 @@
             else if(state.currentBook === 3) coverImg.src = '3-piratas de las islas fragmentadas.jpg';
         }
 
-        // --- DINERO Y BÓVEDA ---
         function updateMoney(val) { state.money = val; autoSave(); }
         function toggleVault(isOpen) { 
             state.isVaultOpen = isOpen; 
@@ -423,7 +418,6 @@
         }
         function updateVault(val) { state.vaultNotes = val; autoSave(); }
 
-        // --- SISTEMA DE PESTAÑAS DE PERSONAJE (DRAG & DROP) ---
         let draggedTabIndex = null;
 
         function renderCharacterTabs() {
@@ -656,7 +650,6 @@
             `;
         }
 
-        // --- FUNCIONES DE ACTUALIZACIÓN ---
         function updateCharName(idx, val) { state.characters[idx].name = val; renderCharacterTabs(); renderActiveCharacter(); autoSave(); }
         function updateCharProp(idx, prop, val) { state.characters[idx][prop] = val; autoSave(); }
         function updateStat(idx, stat, col, val) { state.characters[idx].stats[stat][col] = val; autoSave(); }
@@ -670,7 +663,6 @@
         function updateSpellReady(idx, sIdx, val) { state.characters[idx].spells[sIdx].ready = val; autoSave(); }
         function updateNotes(val) { state.notes = val; autoSave(); }
 
-        // --- CÓDIGOS DE PROGRESIÓN ---
         function renderCodes() {
             const container = document.getElementById('active-grid');
             const title = document.getElementById('codes-title');
@@ -702,7 +694,6 @@
             autoSave();
         }
 
-        // --- SISTEMAS DE FLOTA Y EJÉRCITO ---
         function renderFleet() {
             const tbody = document.getElementById('fleet-body');
             tbody.innerHTML = '';
@@ -742,7 +733,6 @@
         function updateArmy(idx, prop, val) { state.armies[idx][prop] = val; autoSave(); }
         function removeArmy(idx) { if(confirm('¿Eliminar esta unidad?')){ state.armies.splice(idx, 1); renderArmies(); autoSave(); } }
 
-        // --- DADOS ---
         function rollQuickD6(count) {
             document.getElementById('dice-count').value = count;
             rollD6();
@@ -767,7 +757,6 @@
             totDiv.innerHTML = `Suma Total: ${total}`;
         }
 
-        // --- GUARDAR Y CARGAR ---
         function saveCampaign() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const downloadAnchorNode = document.createElement('a');
@@ -820,6 +809,7 @@
 
         function renderAll() {
             document.getElementById('global-money-input').value = state.money;
+            
             document.getElementById('vault-toggle').checked = state.isVaultOpen;
             document.getElementById('vault-container').classList.toggle('active', state.isVaultOpen);
             document.getElementById('vault-notes').value = state.vaultNotes;
