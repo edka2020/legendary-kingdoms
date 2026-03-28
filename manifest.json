@@ -1,0 +1,16 @@
+{
+  "name": "Legendary Kingdoms",
+  "short_name": "LK Tracker",
+  "description": "Asistente de campaña para los librojuegos de Legendary Kingdoms",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#5d4037",
+  "theme_color": "#5d4037",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
