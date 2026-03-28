@@ -24,9 +24,9 @@
             --text: #01579b; --border: #b3e5fc; --money-bg: #e0f7fa;
         }
 
-        /* MODO OSCURO (Sobrescribe las variables) */
+        /* MODO OSCURO */
         body.dark-mode {
-            --primary: #8d6e63; /* Marrón más claro para que resalte */
+            --primary: #8d6e63;
             --secondary: #ff7043;
             --bg: #121212;
             --text: #e0e0e0;
@@ -42,7 +42,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; transition: background-color 0.3s, color 0.3s; }
 
-        /* Navegación Fija */
         nav {
             background-color: var(--primary); color: white; padding: 0.8rem 2rem; display: flex;
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
@@ -51,40 +50,27 @@
         .brand { display: flex; align-items: center; gap: 1rem; }
         .brand img { height: 60px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
         nav h1 { font-size: 1.5rem; margin: 0; color: white; }
-        .book-select {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);
-            padding: 0.4rem; border-radius: 4px; outline: none; font-weight: bold;
-        }
+        .book-select { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 0.4rem; border-radius: 4px; outline: none; font-weight: bold; }
         .book-select option { color: black; }
         .nav-buttons { display: flex; gap: 0.5rem; align-items: center; }
-        .nav-buttons button {
-            background-color: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem;
-            cursor: pointer; border-radius: 4px; transition: 0.3s;
-        }
+        .nav-buttons button { background-color: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; transition: 0.3s; }
         .nav-buttons button:hover { background-color: white; color: var(--primary); }
-        
         #btn-dark-mode { font-size: 1.2rem; padding: 0.4rem 0.6rem; border: none; background: rgba(0,0,0,0.2); }
         #btn-dark-mode:hover { background: rgba(0,0,0,0.4); color: white; }
 
-        /* Notificaciones Elegantes (Toasts) */
         #toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast {
-            background: #333; color: #fff; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            font-size: 0.95rem; font-weight: 600; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; text-align: center;
-        }
+        .toast { background: #333; color: #fff; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-size: 0.95rem; font-weight: 600; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; text-align: center; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.error { background: #e74c3c; }
         .toast.success { background: #2ecc71; }
 
-        /* Layout Principal: 3 Columnas */
         .app-layout { display: flex; max-width: 1600px; margin: 2rem auto; padding: 0 1rem; gap: 2rem; align-items: flex-start; }
-        .sidebar-left, .sidebar-right { width: 300px; flex-shrink: 0; position: sticky; top: 100px; }
+        .sidebar-left, .sidebar-right { width: 320px; flex-shrink: 0; position: sticky; top: 100px; }
         .main-content { flex-grow: 1; min-width: 0; }
         
         .section-box { background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 2rem; transition: background 0.3s; border: 1px solid var(--border); }
         h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--primary); font-size: 1.2rem; }
         
-        /* Pestañas Principales y de Personajes */
         .tabs.main-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: nowrap; overflow: hidden; gap: 4px; }
         .tabs.main-tabs .tab { flex: 1; text-align: center; white-space: normal; padding: 0.8rem 0.5rem; margin-right: 0; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
         .tabs.char-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; flex-wrap: wrap; }
@@ -110,7 +96,6 @@
         table.stats-table th { background-color: var(--tab-bg); color: var(--primary); }
         table.stats-table input { width: 60px; text-align: center; }
 
-        /* Botones de atributos para tirar dados automáticos */
         .btn-roll-stat { 
             background: transparent; border: none; color: var(--primary); font-weight: bold;
             cursor: pointer; text-decoration: underline; font-size: 0.95rem; padding: 5px; border-radius: 4px;
@@ -124,13 +109,11 @@
         .death-checkbox-container { display: inline-flex; align-items: center; gap: 5px; font-size: 0.85rem; color: #7f8c8d; cursor: pointer; padding: 5px 10px; border-radius: 4px; background: var(--tab-bg); border: 1px solid var(--border); margin-top: 15px; transition: 0.2s; }
         .death-checkbox-container:hover { opacity: 0.8; }
 
-        /* Códigos */
         .codes-section { padding: 1.5rem; }
         .codes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 5px; }
         .code-box { border: 1px solid var(--border); text-align: center; padding: 0.5rem 0; font-size: 0.8rem; cursor: pointer; user-select: none; border-radius: 3px; background: var(--input-bg); transition: 0.2s; }
         .code-box.checked { background: var(--primary); color: white; text-decoration: line-through; border-color: var(--primary); }
 
-        /* Columna Derecha (Dinero, Bóveda, Combate) */
         .right-section { padding: 1.5rem; margin-bottom: 1.5rem; }
         .money-input-group { display: flex; align-items: center; gap: 0.8rem; background: var(--money-bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
         .money-input-group input { width: 120px; font-size: 1.2rem; border: 1px solid var(--primary); font-weight: bold; }
@@ -139,39 +122,51 @@
         .vault-container.active { display: block; }
         .vault-container textarea { min-height: 150px; }
 
-        /* Flota y Ejércitos */
         .fleet-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
         .fleet-table th, .fleet-table td { border: 1px solid var(--border); padding: 0.5rem; }
         .fleet-table th { background: var(--tab-bg); color: var(--primary); }
         .btn-add, .btn-delete { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-add { background: #27ae60; color: white; }
+        .btn-add { background: #27ae60; color: white; font-weight: bold;}
         .btn-add:hover { background: #2ecc71; }
         .btn-delete { background: #7f8c8d; color: white; font-weight: bold;}
         .btn-delete:hover { background: #e74c3c; }
 
-        /* Dado D6 Widget con Historial */
+        .combat-module-box { background: var(--bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); }
+        .combat-module-title { color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+
+        /* Dado D6 Widget (Flotante y Redimensionable a 4 esquinas) */
         .dice-widget {
             position: fixed; bottom: 20px; right: 20px; background: var(--surface); border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; width: 300px; max-height: 400px; display: flex; flex-direction: column; transition: background 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; width: 300px; height: 380px; min-width: 250px; min-height: 250px; display: flex; flex-direction: column; 
         }
-        .dice-widget h3 { margin-bottom: 0.5rem; font-size: 1rem; border-bottom: none; color: var(--primary); }
-        .quick-dice { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
+        .dice-widget h3 { margin-bottom: 0.5rem; font-size: 1rem; border-bottom: none; color: var(--primary); cursor: grab; padding-bottom: 5px; border-bottom: 1px solid var(--border); user-select: none; }
+        .dice-widget h3:active { cursor: grabbing; }
+        
+        .resizer { position: absolute; width: 15px; height: 15px; z-index: 10; background: transparent; }
+        .resizer-tl { top: 0; left: 0; cursor: nwse-resize; }
+        .resizer-tr { top: 0; right: 0; cursor: nesw-resize; }
+        .resizer-bl { bottom: 0; left: 0; cursor: nesw-resize; }
+        .resizer-br { bottom: 0; right: 0; cursor: nwse-resize; }
+        .resizer-br::after { content: ''; position: absolute; bottom: 3px; right: 3px; width: 8px; height: 8px; border-right: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+        .resizer-tl::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; border-left: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+        .resizer-tr::after { content: ''; position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; border-right: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+        .resizer-bl::after { content: ''; position: absolute; bottom: 3px; left: 3px; width: 8px; height: 8px; border-left: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+
+        .quick-dice { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px; margin-bottom: 10px; flex-shrink: 0; }
         .quick-dice button { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0; cursor: pointer; border-radius: 3px; font-size: 0.85rem; font-weight: 600; transition: 0.2s;}
         .quick-dice button:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .dice-controls { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; border-top: 1px solid var(--border); padding-top: 10px; }
+        .dice-controls { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; border-top: 1px solid var(--border); padding-top: 10px; flex-shrink: 0; }
         .dice-controls input { width: 60px; }
         .dice-controls button { background: var(--secondary); color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer; flex-grow: 1; font-weight: bold; }
         .dice-controls button:hover { opacity: 0.9; }
         .dice-results { font-size: 0.9rem; margin-top: 0.5rem; overflow-y: auto; flex-grow: 1; border-top: 1px dashed var(--border); padding-top: 5px; }
         .dice-log-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--tab-bg); line-height: 1.3; }
 
-        /* Responsividad */
-        @media (max-width: 1100px) {
+        @media (max-width: 1200px) {
             .app-layout { flex-direction: column; }
             .sidebar-left, .sidebar-right { width: 100%; position: static; }
             .tabs.main-tabs { overflow-x: auto; flex-wrap: nowrap; overflow-y: hidden; }
             .tabs.main-tabs .tab { padding: 0.8rem; font-size: 0.9rem; flex: 0 0 auto; }
-            .dice-widget { width: 250px; }
         }
         @media (max-width: 768px) {
             .grid-2col { grid-template-columns: 1fr; }
@@ -230,7 +225,7 @@
 
             <div id="section-notas" class="section-box" style="display: none;">
                 <h2>Notas de la Aventura</h2>
-                <textarea id="global-notes" placeholder="Anota aquí rumores, misiones, ubicaciones importantes..." oninput="updateNotes(this.value)" style="min-height: 300px;"></textarea>
+                <textarea id="global-notes" placeholder="Anota aquí rumores, misiones, ubicaciones importantes..." oninput="updateNotes(this.value)" style="min-height: 400px;"></textarea>
             </div>
 
             <div id="section-flota" class="section-box" style="display: none;">
@@ -249,6 +244,8 @@
                     <tbody id="fleet-body"></tbody>
                 </table>
                 <button class="btn-add" onclick="addShip()">+ Añadir Barco</button>
+
+                <div id="naval-combat-container" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px dashed var(--border);"></div>
             </div>
 
             <div id="section-ejercitos" class="section-box" style="display: none;">
@@ -266,6 +263,8 @@
                     <tbody id="army-body"></tbody>
                 </table>
                 <button class="btn-add" onclick="addArmy()">+ Añadir Unidad</button>
+
+                <div id="battlefield-container" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px dashed var(--border);"></div>
             </div>
 
         </main>
@@ -289,16 +288,21 @@
                 </div>
             </div>
 
-            <div class="section-box right-section">
-                <h2>⚔️ Enemigos en Combate</h2>
+            <div class="section-box right-section" style="padding: 1rem;">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1rem;">⚔️ Enemigos en Combate</h2>
                 <div id="combat-tracker"></div>
-                <button class="btn-add" onclick="addEnemy()" style="width: 100%; margin-top: 10px;">+ Añadir Enemigo</button>
+                <button class="btn-add" onclick="addEnemy()" style="width: 100%; margin-top: 10px; padding: 0.6rem;">+ Añadir Enemigo</button>
             </div>
         </aside>
     </div>
 
-    <div class="dice-widget">
-        <h3>Lanzador D6</h3>
+    <div class="dice-widget" id="dice-widget">
+        <div class="resizer resizer-tl"></div>
+        <div class="resizer resizer-tr"></div>
+        <div class="resizer resizer-bl"></div>
+        <div class="resizer resizer-br"></div>
+        
+        <h3 title="Arrastra para mover">Lanzador D6 ✥</h3>
         
         <div class="quick-dice">
             <button onclick="rollQuickD6(1)">1d6</button>
@@ -326,17 +330,14 @@
     </div>
 
     <script>
-        // --- TOAST NOTIFICATIONS ---
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = msg;
             container.appendChild(toast);
-            
             void toast.offsetWidth; 
             toast.classList.add('show');
-
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
@@ -357,7 +358,7 @@
         });
 
         const defaultState = {
-            isDarkMode: false, // Guardado de preferencia de Modo Oscuro
+            isDarkMode: false,
             activeMainTab: 'personajes',
             currentBook: 1,
             money: 0,
@@ -370,7 +371,27 @@
             armies: [],
             enemies: [], 
             diceHistory: [],
-            characters: Array(4).fill(null).map(() => getNewCharacterTemplate())
+            characters: Array(4).fill(null).map(() => getNewCharacterTemplate()),
+            
+            activeNavalAlly: -1,
+            navalEnemies: [], 
+            battlefield: {
+                left: { 
+                    enemyFrontName: "", enemyFrontForce: 0, enemyFrontMorale: 0,
+                    enemySupportName: "", enemySupportForce: 0, enemySupportMorale: 0,
+                    allyFrontIdx: -1, allySupportIdx: -1 
+                },
+                center: { 
+                    enemyFrontName: "", enemyFrontForce: 0, enemyFrontMorale: 0,
+                    enemySupportName: "", enemySupportForce: 0, enemySupportMorale: 0,
+                    allyFrontIdx: -1, allySupportIdx: -1 
+                },
+                right: { 
+                    enemyFrontName: "", enemyFrontForce: 0, enemyFrontMorale: 0,
+                    enemySupportName: "", enemySupportForce: 0, enemySupportMorale: 0,
+                    allyFrontIdx: -1, allySupportIdx: -1 
+                }
+            }
         };
 
         let state = JSON.parse(localStorage.getItem('lk_campaign')) || JSON.parse(JSON.stringify(defaultState));
@@ -384,35 +405,48 @@
         if (!state.armies) state.armies = [];
         if (!state.enemies) state.enemies = [];
         if (!state.diceHistory) state.diceHistory = [];
+        if (state.activeNavalAlly === undefined) state.activeNavalAlly = -1;
+        if (!state.navalEnemies) state.navalEnemies = [];
+        
+        if (!state.battlefield) {
+            state.battlefield = JSON.parse(JSON.stringify(defaultState.battlefield));
+        } else {
+            ['left', 'center', 'right'].forEach(f => {
+                let b = state.battlefield[f];
+                if (b.enemyFrontName === undefined) {
+                    b.enemyFrontName = b.enemyName || ""; b.enemyFrontForce = b.enemyForce || 0; b.enemyFrontMorale = b.enemyMorale || 0;
+                    b.enemySupportName = ""; b.enemySupportForce = 0; b.enemySupportMorale = 0;
+                    b.allyFrontIdx = b.allyIdx !== undefined ? b.allyIdx : -1; b.allySupportIdx = -1;
+                }
+            });
+        }
         
         state.characters.forEach(char => {
             if (char.maxHp === undefined) char.maxHp = char.hp || 0;
             if (char.isDead === undefined) char.isDead = false;
         });
+        state.enemies.forEach(e => {
+            if (e.atk === undefined) e.atk = 0;
+            if (e.successOn === undefined) e.successOn = 4;
+            if (e.def === undefined) e.def = 0;
+        });
         if(state.activeTab >= state.characters.length) state.activeTab = 0;
 
-        function autoSave() {
-            localStorage.setItem('lk_campaign', JSON.stringify(state));
-        }
+        function autoSave() { localStorage.setItem('lk_campaign', JSON.stringify(state)); }
 
-        // --- MODO OSCURO ---
         function toggleDarkMode() {
             state.isDarkMode = !state.isDarkMode;
-            autoSave();
-            applyTheme();
+            autoSave(); applyTheme();
         }
 
         function applyTheme() {
-            // Aplicar Libro
             document.body.className = `theme-book${state.currentBook}`;
             document.getElementById('book-selector').value = state.currentBook;
-            
             const coverImg = document.getElementById('book-cover');
             if(state.currentBook === 1) coverImg.src = '1-el valle de los huesos.jpg';
             else if(state.currentBook === 2) coverImg.src = '2-corona y torre.jpg';
             else if(state.currentBook === 3) coverImg.src = '3-piratas de las islas fragmentadas.jpg';
 
-            // Aplicar Modo Oscuro encima del tema del libro
             if (state.isDarkMode) {
                 document.body.classList.add('dark-mode');
                 document.getElementById('btn-dark-mode').innerText = '☀️';
@@ -422,12 +456,7 @@
             }
         }
 
-        function switchMainTab(tabId) {
-            state.activeMainTab = tabId;
-            autoSave();
-            renderMainTabs();
-        }
-
+        function switchMainTab(tabId) { state.activeMainTab = tabId; autoSave(); renderMainTabs(); }
         function renderMainTabs() {
             const sections = ['personajes', 'notas', 'flota', 'ejercitos'];
             sections.forEach(sec => {
@@ -436,53 +465,30 @@
             });
         }
 
-        function changeBook(bookId) {
-            state.currentBook = parseInt(bookId);
-            autoSave();
-            applyTheme();
-            renderCodes();
-        }
-
+        function changeBook(bookId) { state.currentBook = parseInt(bookId); autoSave(); applyTheme(); renderCodes(); }
         function updateMoney(val) { state.money = val; autoSave(); }
-        function toggleVault(isOpen) { 
-            state.isVaultOpen = isOpen; 
-            document.getElementById('vault-container').classList.toggle('active', isOpen);
-            autoSave(); 
-        }
+        function toggleVault(isOpen) { state.isVaultOpen = isOpen; document.getElementById('vault-container').classList.toggle('active', isOpen); autoSave(); }
         function updateVault(val) { state.vaultNotes = val; autoSave(); }
 
         let draggedTabIndex = null;
-
         function renderCharacterTabs() {
-            const tabsContainer = document.getElementById('char-tabs');
-            tabsContainer.innerHTML = '';
-            
+            const tabsContainer = document.getElementById('char-tabs'); tabsContainer.innerHTML = '';
             state.characters.forEach((char, index) => {
                 const div = document.createElement('div');
                 div.className = `tab char-tab ${state.activeTab === index ? 'active' : ''} ${char.isDead ? 'dead' : ''}`;
                 div.textContent = char.name || `Personaje ${index + 1}`;
-                div.dataset.index = index;
-                div.draggable = true;
+                div.dataset.index = index; div.draggable = true;
                 
-                div.addEventListener('dragstart', handleDragStart);
-                div.addEventListener('dragover', handleDragOver);
-                div.addEventListener('dragenter', handleDragEnter);
-                div.addEventListener('dragleave', handleDragLeave);
-                div.addEventListener('drop', handleDrop);
-                div.addEventListener('dragend', handleDragEnd);
+                div.addEventListener('dragstart', handleDragStart); div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('dragenter', handleDragEnter); div.addEventListener('dragleave', handleDragLeave);
+                div.addEventListener('drop', handleDrop); div.addEventListener('dragend', handleDragEnd);
 
                 div.onclick = () => { state.activeTab = index; autoSave(); renderAll(); };
                 tabsContainer.appendChild(div);
             });
 
-            const livingCount = state.characters.filter(c => !c.isDead).length;
-            if (livingCount < 4) {
-                const addBtn = document.createElement('div');
-                addBtn.className = 'tab add-tab';
-                addBtn.textContent = '+ Añadir';
-                addBtn.title = 'Añadir un nuevo personaje';
-                addBtn.onclick = addCharacter;
-                tabsContainer.appendChild(addBtn);
+            if (state.characters.filter(c => !c.isDead).length < 4) {
+                const addBtn = document.createElement('div'); addBtn.className = 'tab add-tab'; addBtn.textContent = '+ Añadir'; addBtn.onclick = addCharacter; tabsContainer.appendChild(addBtn);
             }
         }
 
@@ -490,108 +496,89 @@
         function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
         function handleDragEnter(e) { if(this !== e.target) this.classList.add('drag-over'); }
         function handleDragLeave(e) { this.classList.remove('drag-over'); }
-
         function handleDrop(e) {
-            e.stopPropagation();
-            this.classList.remove('drag-over');
+            e.stopPropagation(); this.classList.remove('drag-over');
             const targetIndex = parseInt(this.dataset.index);
             if (draggedTabIndex !== null && draggedTabIndex !== targetIndex) {
                 const char = state.characters.splice(draggedTabIndex, 1)[0];
                 state.characters.splice(targetIndex, 0, char);
-                
                 if (state.activeTab === draggedTabIndex) { state.activeTab = targetIndex; } 
                 else if (state.activeTab > draggedTabIndex && state.activeTab <= targetIndex) { state.activeTab--; } 
                 else if (state.activeTab < draggedTabIndex && state.activeTab >= targetIndex) { state.activeTab++; }
-                
                 autoSave(); renderAll();
             }
             return false;
         }
-
-        function handleDragEnd(e) {
-            this.style.opacity = '1';
-            const tabs = document.querySelectorAll('.char-tab');
-            tabs.forEach(tab => tab.classList.remove('drag-over'));
-            draggedTabIndex = null;
-        }
+        function handleDragEnd(e) { this.style.opacity = '1'; document.querySelectorAll('.char-tab').forEach(tab => tab.classList.remove('drag-over')); draggedTabIndex = null; }
 
         function addCharacter() {
-            const livingCount = state.characters.filter(c => !c.isDead).length;
-            if (livingCount >= 4) { showToast("Ya tienes 4 personajes vivos. No puedes añadir más.", "error"); return; }
-            
-            const newChar = getNewCharacterTemplate();
-            const firstDeadIndex = state.characters.findIndex(c => c.isDead);
-            
+            if (state.characters.filter(c => !c.isDead).length >= 4) { showToast("Ya tienes 4 personajes vivos.", "error"); return; }
+            const newChar = getNewCharacterTemplate(); const firstDeadIndex = state.characters.findIndex(c => c.isDead);
             if (firstDeadIndex !== -1) { state.characters.splice(firstDeadIndex, 0, newChar); state.activeTab = firstDeadIndex; } 
             else { state.characters.push(newChar); state.activeTab = state.characters.length - 1; }
-            
             autoSave(); renderAll(); showToast("Personaje añadido.", "success");
         }
-
         function deleteCharacter(idx) {
-            if (confirm("¿Estás seguro de que quieres eliminar esta pestaña de personaje de forma permanente?")) {
+            if (confirm("¿Eliminar esta pestaña de personaje de forma permanente?")) {
                 state.characters.splice(idx, 1);
-                if (state.activeTab >= state.characters.length) { state.activeTab = Math.max(0, state.characters.length - 1); }
+                if (state.activeTab >= state.characters.length) state.activeTab = Math.max(0, state.characters.length - 1);
                 autoSave(); renderAll(); showToast("Personaje eliminado.", "success");
             }
         }
-
         function toggleDeath(idx, isDead) {
-            if (!isDead) {
-                const livingCount = state.characters.filter(c => !c.isDead).length;
-                if (livingCount >= 4) { showToast("Ya hay 4 personajes vivos. No puedes revivir a este personaje.", "error"); renderAll(); return; }
-            }
+            if (!isDead && state.characters.filter(c => !c.isDead).length >= 4) { showToast("Ya hay 4 personajes vivos.", "error"); renderAll(); return; }
             state.characters[idx].isDead = isDead;
-            if (isDead) {
-                const deadChar = state.characters.splice(idx, 1)[0];
-                state.characters.push(deadChar);
-                state.activeTab = state.characters.length - 1;
-            }
+            if (isDead) { const deadChar = state.characters.splice(idx, 1)[0]; state.characters.push(deadChar); state.activeTab = state.characters.length - 1; }
             autoSave(); renderAll();
         }
 
-        // --- TIRADAS AUTOMÁTICAS DESDE ATRIBUTOS ---
         function rollAttribute(charIdx, statName) {
             const char = state.characters[charIdx];
-            const diceCount = parseInt(char.stats[statName][1]) || 0; // Valor "Modificado"
+            const diceCount = parseInt(char.stats[statName][1]) || 0; 
+            if (diceCount < 1) { showToast(`${char.name || 'El personaje'} tiene 0 en el modificado de ${statName}.`, "error"); return; }
 
-            if (diceCount < 1) {
-                showToast(`${char.name || 'El personaje'} tiene 0 en el modificado de ${statName}.`, "error");
-                return;
-            }
-
-            let results = [];
-            let total = 0;
+            let results = []; let total = 0;
             for(let i=0; i<diceCount; i++) {
                 const roll = Math.floor(Math.random() * 6) + 1;
-                results.push(roll);
-                total += roll;
+                results.push(roll); total += roll;
             }
 
             const charName = char.name || `Personaje ${charIdx + 1}`;
-            const logEntry = `<div class="dice-log-entry"><b>${charName} tira ${statName} (${diceCount}d6):</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Total: ${total}</b></div>`;
+            const logEntry = `<div class="dice-log-entry"><b>🎲 ${charName} tira ${statName} (${diceCount}d6):</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Suma Total: ${total}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
             
-            state.diceHistory.unshift(logEntry);
-            if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast(`¡Tirada de ${statName} completada!`, "success");
+        }
+
+        function rollArmor(charIdx) {
+            const char = state.characters[charIdx];
+            const diceCount = parseInt(char.armor) || 0;
+            if (diceCount < 1) { showToast(`${char.name || 'El personaje'} no tiene armadura.`, "error"); return; }
             
-            autoSave();
-            renderDiceHistory();
-            showToast(`¡Tirada de ${statName} completada!`, "success");
+            let results = []; let blocks = 0;
+            for(let i=0; i<diceCount; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll); if (roll >= 4) blocks++;
+            }
+            
+            const charName = char.name || `Personaje ${charIdx + 1}`;
+            const logEntry = `<div class="dice-log-entry"><b>🛡️ ${charName} tira Armadura (${diceCount}d6):</b> [${results.join(', ')}] <br> ➔ <b style="color:#27ae60">Bloqueos a 4+: ${blocks}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            
+            autoSave(); renderDiceHistory(); showToast(`Tirada de armadura: ${blocks} bloqueos.`, "success");
         }
 
         function renderActiveCharacter() {
             const container = document.getElementById('character-content');
             if (state.characters.length === 0) { container.innerHTML = '<p>No hay personajes. Añade uno para empezar.</p>'; return; }
 
-            const char = state.characters[state.activeTab];
-            const cIndex = state.activeTab;
+            const char = state.characters[state.activeTab]; const cIndex = state.activeTab;
             const isMage = magesList.includes(char.name);
 
             let optionsHtml = ''; officialCharacters.forEach(name => { optionsHtml += `<option value="${name}">`; });
 
             let statsHtml = '';
             for (const [stat, vals] of Object.entries(char.stats)) {
-                // El td del stat ahora es un botón
                 statsHtml += `<tr>
                     <td><button onclick="rollAttribute(${cIndex}, '${stat}')" class="btn-roll-stat" title="Tirar ${vals[1]}d6 por el valor modificado">🎲 ${stat}</button></td>
                     <td><input type="number" value="${vals[0]}" oninput="updateStat(${cIndex}, '${stat}', 0, this.value)"></td>
@@ -599,8 +586,7 @@
                 </tr>`;
             }
 
-            let equipHtml = '';
-            char.equipment.forEach((item, i) => { equipHtml += `<div class="form-group"><input type="text" placeholder="Espacio ${i+1}" value="${item}" oninput="updateEquip(${cIndex}, ${i}, this.value)"></div>`; });
+            let equipHtml = ''; char.equipment.forEach((item, i) => { equipHtml += `<div class="form-group"><input type="text" placeholder="Espacio ${i+1}" value="${item}" oninput="updateEquip(${cIndex}, ${i}, this.value)"></div>`; });
 
             let spellsHtml = '';
             char.spells.forEach((spell, i) => {
@@ -623,8 +609,8 @@
                             <input type="text" list="official-chars-list" value="${char.name}" placeholder="Elige o escribe un nombre..." onchange="updateCharName(${cIndex}, this.value)">
                             <datalist id="official-chars-list">${optionsHtml}</datalist>
                         </div>
-                        <div style="display:flex; gap: 1rem; margin-top: 1rem;">
-                            <div class="form-group" style="flex: 2;">
+                        <div style="display:flex; gap: 1rem; margin-top: 1rem; align-items: flex-end; margin-bottom: 1rem;">
+                            <div class="form-group" style="flex: 2; margin-bottom: 0;">
                                 <label>Puntos de Salud (Actual / Máx)</label>
                                 <div style="display:flex; align-items:center; gap: 0.5rem;">
                                     <input type="number" value="${char.hp}" oninput="updateCharProp(${cIndex}, 'hp', this.value)" title="Salud Actual">
@@ -632,7 +618,13 @@
                                     <input type="number" value="${char.maxHp}" oninput="updateCharProp(${cIndex}, 'maxHp', this.value)" title="Salud Máxima">
                                 </div>
                             </div>
-                            <div class="form-group" style="flex: 1;"><label>Armadura</label><input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)"></div>
+                            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                <label>Armadura</label>
+                                <div style="display:flex; align-items:center; gap: 0.5rem;">
+                                    <input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)" style="width: 100%;">
+                                    <button onclick="rollArmor(${cIndex})" class="btn-roll-stat" title="Tirar dados de Armadura (Éxitos a 4+)" style="width: auto; background: var(--bg); border: 1px solid var(--border); padding: 0.5rem 0.6rem; margin: 0;">🎲</button>
+                                </div>
+                            </div>
                         </div>
                         <table class="stats-table"><thead><tr><th>Atributo</th><th>Habilidad</th><th>Modificado</th></tr></thead><tbody>${statsHtml}</tbody></table>
                         <div class="spellbook ${isMage ? 'active' : ''}"><h3 style="margin-bottom:10px; font-size:1rem; color: var(--primary);">Libro de Hechizos</h3>${spellsHtml}</div>
@@ -656,9 +648,7 @@
         function updateNotes(val) { state.notes = val; autoSave(); }
 
         function renderCodes() {
-            const container = document.getElementById('active-grid');
-            const title = document.getElementById('codes-title');
-            container.innerHTML = '';
+            const container = document.getElementById('active-grid'); const title = document.getElementById('codes-title'); container.innerHTML = '';
             let prefix = 'A'; let max = 100;
             if(state.currentBook === 1) { prefix = 'A'; max = 100; title.innerText = 'Libro 1 (A1 - A100)'; }
             else if(state.currentBook === 2) { prefix = 'B'; max = 110; title.innerText = 'Libro 2 (B1 - B110)'; }
@@ -676,14 +666,14 @@
             autoSave();
         }
 
-        // --- COMBATE ---
+        // --- COMBATE ENEMIGOS (CUERPO A CUERPO) ---
         function renderEnemies() {
             const container = document.getElementById('combat-tracker');
             container.innerHTML = '';
             
             if (state.enemies.length > 0) {
                 container.innerHTML += `
-                    <div style="display: flex; gap: 5px; margin-bottom: 5px; font-size: 0.85rem; font-weight: bold; color: var(--primary);">
+                    <div style="display: flex; gap: 5px; margin-bottom: 5px; font-size: 0.8rem; font-weight: bold; color: var(--primary);">
                         <div style="flex: 2; padding-left: 2px;">Nombre del Enemigo</div>
                         <div style="flex: 1; padding-left: 2px;">Vida</div>
                         <div style="width: 28px;"></div>
@@ -693,19 +683,50 @@
 
             state.enemies.forEach((enemy, i) => {
                 container.innerHTML += `
-                    <div style="display: flex; gap: 5px; margin-bottom: 8px; align-items: center;">
-                        <input type="text" value="${enemy.name}" placeholder="Ej. Guardia" oninput="updateEnemy(${i}, 'name', this.value)" style="flex: 2; padding: 0.4rem;">
-                        <input type="number" value="${enemy.hp}" placeholder="0" oninput="updateEnemy(${i}, 'hp', this.value)" style="flex: 1; padding: 0.4rem;">
-                        <button class="btn-delete" onclick="removeEnemy(${i})" style="padding: 0.4rem; border-radius: 4px; width: 28px; text-align: center;" title="Eliminar">X</button>
+                    <div style="border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 12px; background: var(--tab-bg);">
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; align-items: center;">
+                            <input type="text" value="${enemy.name}" placeholder="Nombre..." oninput="updateEnemy(${i}, 'name', this.value)" style="flex: 2; padding: 0.4rem; font-weight: bold;">
+                            <input type="number" value="${enemy.hp}" placeholder="Vida" title="Vida" oninput="updateEnemy(${i}, 'hp', this.value)" style="flex: 1; padding: 0.4rem; color: var(--secondary); font-weight: bold;">
+                            <button class="btn-delete" onclick="removeEnemy(${i})" style="padding: 0.4rem 0.6rem; border-radius: 4px;" title="Eliminar">X</button>
+                        </div>
+                        <div style="display: flex; gap: 5px; align-items: center; font-size: 0.8rem; background: var(--bg); padding: 5px; border-radius: 4px; border: 1px solid var(--border);">
+                            <span title="Dados de Ataque">⚔️</span>
+                            <input type="number" value="${enemy.atk}" oninput="updateEnemy(${i}, 'atk', this.value)" style="width: 45px; padding: 0.2rem;" title="Dados de ataque">
+                            <span>d6 a</span>
+                            <input type="number" value="${enemy.successOn}" oninput="updateEnemy(${i}, 'successOn', this.value)" style="width: 40px; padding: 0.2rem;" title="Éxito a +">
+                            <span>+</span>
+                            <span style="margin-left:auto;" title="Defensa">🛡️</span>
+                            <input type="number" value="${enemy.def}" oninput="updateEnemy(${i}, 'def', this.value)" style="width: 45px; padding: 0.2rem;" title="Defensa">
+                        </div>
+                        <button onclick="rollEnemyAttack(${i})" style="margin-top: 8px; background: var(--secondary); color: white; border: none; padding: 0.4rem; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s;">🎲 Tirar Ataque</button>
                     </div>
                 `;
             });
         }
-        function addEnemy() { state.enemies.push({ name: "", hp: 0 }); autoSave(); renderEnemies(); }
+        function addEnemy() { state.enemies.push({ name: "", hp: 0, atk: 0, successOn: 4, def: 0 }); autoSave(); renderEnemies(); }
         function updateEnemy(idx, prop, val) { state.enemies[idx][prop] = val; autoSave(); }
         function removeEnemy(idx) { state.enemies.splice(idx, 1); autoSave(); renderEnemies(); }
 
-        // --- FLOTA Y EJÉRCITOS ---
+        function rollEnemyAttack(idx) {
+            const enemy = state.enemies[idx];
+            const diceCount = parseInt(enemy.atk) || 0;
+            const target = parseInt(enemy.successOn) || 4;
+
+            if (diceCount < 1) { showToast(`${enemy.name || 'El enemigo'} no tiene dados de ataque.`, "error"); return; }
+
+            let results = []; let successes = 0;
+            for(let i=0; i<diceCount; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll);
+                if (roll >= target) successes++;
+            }
+
+            const logEntry = `<div class="dice-log-entry"><b>🗡️ ${enemy.name || 'Enemigo'} ataca (${diceCount}d6 a ${target}+):</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Impactos: ${successes}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast(`Ataque completado.`, "success");
+        }
+
+        // --- GESTIÓN DE FLOTA Y COMBATE NAVAL ---
         function renderFleet() {
             const tbody = document.getElementById('fleet-body'); tbody.innerHTML = '';
             state.fleet.forEach((ship, i) => {
@@ -718,11 +739,102 @@
                     <td><button class="btn-delete" onclick="removeShip(${i})">X</button></td>
                 </tr>`;
             });
+            renderNavalCombat();
         }
         function addShip() { state.fleet.push({ name: "", combat: 0, hp: 0, cargo: 0, location: "" }); renderFleet(); autoSave(); }
-        function updateFleet(idx, prop, val) { state.fleet[idx][prop] = val; autoSave(); }
-        function removeShip(idx) { if(confirm('¿Eliminar este barco?')){ state.fleet.splice(idx, 1); renderFleet(); autoSave(); } }
+        function updateFleet(idx, prop, val) { state.fleet[idx][prop] = val; autoSave(); if(prop==='name' || prop==='combat') renderNavalCombat(); }
+        function removeShip(idx) { 
+            if(confirm('¿Eliminar este barco?')){ 
+                state.fleet.splice(idx, 1); 
+                if(state.activeNavalAlly === idx) state.activeNavalAlly = -1;
+                else if(state.activeNavalAlly > idx) state.activeNavalAlly--; 
+                renderFleet(); autoSave(); 
+            } 
+        }
 
+        function renderNavalCombat() {
+            const container = document.getElementById('naval-combat-container');
+            let options = '<option value="-1">-- Selecciona tu barco --</option>';
+            state.fleet.forEach((s, i) => {
+                options += `<option value="${i}" ${state.activeNavalAlly === i ? 'selected' : ''}>${s.name || 'Sin nombre'} (Combate: ${s.combat})</option>`;
+            });
+
+            let enemiesHtml = '';
+            state.navalEnemies.forEach((en, i) => {
+                enemiesHtml += `
+                    <div style="border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 10px; background: var(--tab-bg);">
+                        <div style="display:flex; gap: 5px; align-items:center; margin-bottom:5px;">
+                            <input type="text" placeholder="Nombre de nave enemiga..." value="${en.name}" oninput="updateNavalEnemy(${i}, 'name', this.value)" style="flex:1; font-weight:bold;">
+                            <button class="btn-delete" onclick="removeNavalEnemy(${i})" style="padding: 0.4rem 0.6rem; border-radius: 4px;" title="Eliminar">X</button>
+                        </div>
+                        <div style="display:flex; gap: 5px; align-items:center;">
+                            <span title="Combate">⚔️</span>
+                            <input type="number" title="Combate" value="${en.combat}" oninput="updateNavalEnemy(${i}, 'combat', this.value)" style="width: 60px;">
+                            <span title="Salud">❤️</span>
+                            <input type="number" title="Salud" value="${en.hp}" oninput="updateNavalEnemy(${i}, 'hp', this.value)" style="width: 60px; color: var(--secondary); font-weight:bold;">
+                            <button onclick="rollNavalEnemyAttack(${i})" style="background: var(--secondary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left:auto; transition:0.2s;">🔥 Disparar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <h3 class="combat-module-title">⚓ Combate Naval</h3>
+                <div class="grid-2col">
+                    <div class="combat-module-box">
+                        <h4 style="margin-bottom: 0.5rem; color:var(--primary);">Nuestra Nave</h4>
+                        <select onchange="state.activeNavalAlly = parseInt(this.value); autoSave();" style="margin-bottom: 1rem; width:100%; padding:0.5rem;">${options}</select>
+                        <button onclick="rollNavalAttack('ally')" style="background: var(--primary); color: white; border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; transition:0.2s;">💥 Fuego Aliado (A 4+)</button>
+                    </div>
+                    <div class="combat-module-box" style="border-color: var(--secondary);">
+                        <h4 style="margin-bottom: 0.5rem; color: var(--secondary);">Naves Enemigas</h4>
+                        ${enemiesHtml}
+                        <button class="btn-add" onclick="addNavalEnemy()" style="width: 100%; padding: 0.4rem; margin-top: 5px;">+ Añadir Nave Enemiga</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addNavalEnemy() { state.navalEnemies.push({ name: "", combat: 0, hp: 0 }); autoSave(); renderNavalCombat(); }
+        function updateNavalEnemy(idx, prop, val) { state.navalEnemies[idx][prop] = val; autoSave(); }
+        function removeNavalEnemy(idx) { state.navalEnemies.splice(idx, 1); autoSave(); renderNavalCombat(); }
+
+        function rollNavalAttack(side) {
+            let name, combat;
+            if (side === 'ally') {
+                if (state.activeNavalAlly === undefined || state.activeNavalAlly === -1 || !state.fleet[state.activeNavalAlly]) { showToast("Selecciona un barco aliado primero.", "error"); return; }
+                name = state.fleet[state.activeNavalAlly].name || "Nave Aliada"; combat = parseInt(state.fleet[state.activeNavalAlly].combat) || 0;
+            }
+            if (combat < 1) { showToast(`${name} no tiene dados de combate.`, "error"); return; }
+
+            let results = []; let successes = 0;
+            for(let i=0; i<combat; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll); if (roll >= 4) successes++;
+            }
+            const logEntry = `<div class="dice-log-entry"><b style="color:var(--primary)">⚓ ${name} dispara (${combat}d6):</b> [${results.join(', ')}] <br> ➔ <b>Impactos a 4+: ${successes}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast(`Fuego aliado completado.`, "success");
+        }
+
+        function rollNavalEnemyAttack(idx) {
+            const enemy = state.navalEnemies[idx];
+            const name = enemy.name || "Nave Enemiga";
+            const combat = parseInt(enemy.combat) || 0;
+            
+            if (combat < 1) { showToast(`${name} no tiene dados de combate.`, "error"); return; }
+
+            let results = []; let successes = 0;
+            for(let i=0; i<combat; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll); if (roll >= 4) successes++;
+            }
+            const logEntry = `<div class="dice-log-entry"><b style="color:var(--secondary)">⚓ ${name} dispara (${combat}d6):</b> [${results.join(', ')}] <br> ➔ <b>Impactos a 4+: ${successes}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast(`Fuego de ${name} completado.`, "success");
+        }
+
+        // --- GESTIÓN DE EJÉRCITOS Y CAMPO DE BATALLA ---
         function renderArmies() {
             const tbody = document.getElementById('army-body'); tbody.innerHTML = '';
             state.armies.forEach((army, i) => {
@@ -734,36 +846,252 @@
                     <td><button class="btn-delete" onclick="removeArmy(${i})">X</button></td>
                 </tr>`;
             });
+            renderBattlefield();
         }
         function addArmy() { state.armies.push({ unit: "", force: 0, morale: 0, garrison: "" }); renderArmies(); autoSave(); }
-        function updateArmy(idx, prop, val) { state.armies[idx][prop] = val; autoSave(); }
-        function removeArmy(idx) { if(confirm('¿Eliminar esta unidad?')){ state.armies.splice(idx, 1); renderArmies(); autoSave(); } }
+        function updateArmy(idx, prop, val) { state.armies[idx][prop] = val; autoSave(); if(prop==='unit' || prop==='force' || prop==='morale') renderBattlefield(); }
+        function removeArmy(idx) { 
+            if(confirm('¿Eliminar esta unidad?')){ 
+                state.armies.splice(idx, 1); 
+                ['left','center','right'].forEach(f => { 
+                    let b = state.battlefield[f];
+                    if(b.allyFrontIdx === idx) b.allyFrontIdx = -1; else if(b.allyFrontIdx > idx) b.allyFrontIdx--;
+                    if(b.allySupportIdx === idx) b.allySupportIdx = -1; else if(b.allySupportIdx > idx) b.allySupportIdx--;
+                });
+                renderArmies(); autoSave(); 
+            } 
+        }
 
-        // --- DADOS (CON HISTORIAL) ---
+        function assignAllyToBattlefield(flankId, role, idxStr) {
+            const newIdx = parseInt(idxStr);
+            if (newIdx !== -1) {
+                ['left', 'center', 'right'].forEach(f => {
+                    if (state.battlefield[f].allyFrontIdx === newIdx) state.battlefield[f].allyFrontIdx = -1;
+                    if (state.battlefield[f].allySupportIdx === newIdx) state.battlefield[f].allySupportIdx = -1;
+                });
+            }
+            if (role === 'front') state.battlefield[flankId].allyFrontIdx = newIdx;
+            else state.battlefield[flankId].allySupportIdx = newIdx;
+            
+            autoSave(); renderBattlefield();
+        }
+
+        function renderBattlefield() {
+            const container = document.getElementById('battlefield-container');
+            
+            const renderFlank = (flankId, title) => {
+                const data = state.battlefield[flankId];
+                
+                let optionsFront = '<option value="-1">-- Ninguna --</option>';
+                let optionsSupport = '<option value="-1">-- Ninguna --</option>';
+                
+                state.armies.forEach((a, i) => {
+                    const txt = `${a.unit || 'Unidad'} (Fz: ${a.force} | Mo: ${a.morale})`;
+                    optionsFront += `<option value="${i}" ${data.allyFrontIdx === i ? 'selected' : ''}>${txt}</option>`;
+                    optionsSupport += `<option value="${i}" ${data.allySupportIdx === i ? 'selected' : ''}>${txt}</option>`;
+                });
+
+                return `
+                <div class="combat-module-box" style="text-align: left; padding: 1rem;">
+                    <h4 style="margin-bottom: 1rem; color:var(--primary); font-size:1.1rem; text-align:center;">${title}</h4>
+                    
+                    <div style="padding: 0.5rem; background: rgba(231, 76, 60, 0.05); border-radius: 4px; border: 1px solid rgba(231, 76, 60, 0.3);">
+                        <strong style="color: var(--secondary); font-size: 0.9rem;">Ejército Enemigo</strong>
+                        
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: var(--secondary);">⚔️ Frente (Combate)</div>
+                        <div style="display:flex; gap:5px; margin-bottom:5px; align-items:center;">
+                            <input type="text" placeholder="Nombre" value="${data.enemyFrontName}" oninput="state.battlefield['${flankId}'].enemyFrontName = this.value; autoSave();" style="flex:2; font-size:0.85rem; padding:0.3rem;">
+                            <span title="Fuerza">⚔️</span>
+                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemyFrontForce}" oninput="state.battlefield['${flankId}'].enemyFrontForce = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
+                            <span title="Moral">🚩</span>
+                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemyFrontMorale}" oninput="state.battlefield['${flankId}'].enemyFrontMorale = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
+                            <button onclick="rollMorale('${flankId}', 'enemy')" title="Chequeo Moral (Manual)" style="background:#e74c3c; color:white; border:none; border-radius:4px; padding:0 8px; cursor:pointer; height:28px;">🚩</button>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
+                        <div style="display:flex; gap:5px; align-items:center;">
+                            <input type="text" placeholder="Nombre" value="${data.enemySupportName}" oninput="state.battlefield['${flankId}'].enemySupportName = this.value; autoSave();" style="flex:2; font-size:0.85rem; padding:0.3rem;">
+                            <span title="Fuerza" style="opacity:0.6;">⚔️</span>
+                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemySupportForce}" oninput="state.battlefield['${flankId}'].enemySupportForce = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
+                            <span title="Moral" style="opacity:0.6;">🚩</span>
+                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemySupportMorale}" oninput="state.battlefield['${flankId}'].enemySupportMorale = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
+                            <div style="width:28px;"></div> </div>
+                    </div>
+                    
+                    <div style="font-weight: bold; margin: 0.8rem 0; color: #7f8c8d; font-size:1.2rem; text-align:center;">VS</div>
+                    
+                    <div style="padding: 0.5rem; background: var(--surface); border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 1rem;">
+                        <strong style="color: var(--primary); font-size: 0.9rem;">Ejército Aliado</strong>
+                        
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: var(--primary);">⚔️ Frente (Combate)</div>
+                        <div style="display:flex; gap:5px; margin-bottom:5px; align-items:center;">
+                            <select onchange="assignAllyToBattlefield('${flankId}', 'front', this.value)" style="flex:1; font-size:0.85rem; padding:0.3rem;">${optionsFront}</select>
+                            <button onclick="rollMorale('${flankId}', 'ally')" title="Chequeo Moral (Manual)" style="background:var(--primary); color:white; border:none; border-radius:4px; padding:0 8px; cursor:pointer; height: 28px;">🚩</button>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
+                        <div style="display:flex; gap:5px; align-items:center;">
+                            <select onchange="assignAllyToBattlefield('${flankId}', 'support', this.value)" style="flex:1; font-size:0.85rem; padding:0.3rem;">${optionsSupport}</select>
+                            <div style="width:28px;"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="resolveFlank('${flankId}', '${title}')" style="background: var(--primary); color: white; border: none; padding: 0.6rem; border-radius: 4px; width: 100%; cursor: pointer; font-weight: bold; transition:0.2s;">⚔️ Resolver Choque</button>
+                </div>`;
+            };
+
+            container.innerHTML = `
+                <h3 class="combat-module-title">🚩 Campo de Batalla</h3>
+                <p style="font-size:0.85rem; margin-bottom: 1rem; color: #7f8c8d;">Asigna unidades al <b>Frente</b> y <b>Apoyo</b>. El choque (1d6+Fz) enfrenta a las unidades del Frente. El perdedor debe chequear Moral (🚩) y modificar sus atributos manualmente.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    ${renderFlank('left', 'Flanco Izquierdo')}
+                    ${renderFlank('center', 'Centro')}
+                    ${renderFlank('right', 'Flanco Derecho')}
+                </div>
+            `;
+        }
+
+        function resolveFlank(flankId, title) {
+            const data = state.battlefield[flankId];
+            const enemyForce = data.enemyFrontForce || 0;
+            const enemyName = data.enemyFrontName || "Enemigo";
+            
+            let allyForce = 0; let allyName = "Nadie";
+            if (data.allyFrontIdx !== -1 && state.armies[data.allyFrontIdx]) {
+                allyForce = parseInt(state.armies[data.allyFrontIdx].force) || 0;
+                allyName = state.armies[data.allyFrontIdx].unit || "Unidad Aliada";
+            }
+
+            const rollAlly = Math.floor(Math.random() * 6) + 1;
+            const rollEnemy = Math.floor(Math.random() * 6) + 1;
+            const totalAlly = rollAlly + allyForce;
+            const totalEnemy = rollEnemy + enemyForce;
+
+            let resultText = ""; let color = "";
+            if (totalAlly > totalEnemy) { resultText = `¡Gana Aliado! El enemigo <b>${enemyName}</b> debe hacer un Chequeo de Moral.`; color = "#27ae60"; } 
+            else if (totalEnemy > totalAlly) { resultText = `¡Gana Enemigo! El aliado <b>${allyName}</b> debe hacer un Chequeo de Moral.`; color = "var(--secondary)"; } 
+            else { resultText = "¡Empate! Sangre derramada sin avance. Nadie tira moral."; color = "#f39c12"; }
+
+            const logEntry = `<div class="dice-log-entry"><b>⚔️ Choque en ${title}:</b><br>
+                <span style="font-size:0.85rem;">Aliado (${allyName}): 1d6 [${rollAlly}] + ${allyForce} Fz = ${totalAlly}</span><br>
+                <span style="font-size:0.85rem;">Enemigo (${enemyName}): 1d6 [${rollEnemy}] + ${enemyForce} Fz = ${totalEnemy}</span><br>
+                ➔ <span style="color:${color}">${resultText}</span></div>`;
+
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast(`Choque resuelto en el ${title}.`, "success");
+        }
+
+        function rollMorale(flankId, side) {
+            const data = state.battlefield[flankId];
+            const roll = Math.floor(Math.random() * 6) + 1;
+            let logEntry = "";
+            
+            if (side === 'ally') {
+                const idx = data.allyFrontIdx;
+                if (idx === -1 || !state.armies[idx]) { showToast("No hay unidad aliada en el frente.", "error"); return; }
+                const army = state.armies[idx];
+                const morale = parseInt(army.morale) || 0;
+                
+                if (roll > morale) {
+                    logEntry = `<div class="dice-log-entry"><b>🚩 Moral Aliada (${army.unit}):</b> 1d6 [${roll}] vs Mo ${morale}. <br>➔ <b style="color:var(--secondary)">¡PÁNICO! Modifica la tabla para retirarla y subir el Apoyo.</b></div>`;
+                } else {
+                    logEntry = `<div class="dice-log-entry"><b>🚩 Moral Aliada (${army.unit}):</b> 1d6 [${roll}] vs Mo ${morale}. <br>➔ <b style="color:#27ae60">¡FIRMES! Resta 1 punto de Moral manualmente a la unidad.</b></div>`;
+                }
+            } else {
+                const name = data.enemyFrontName || "Enemigo";
+                const morale = parseInt(data.enemyFrontMorale) || 0;
+                
+                if (name === "" && data.enemyFrontForce === 0) { showToast("No hay unidad enemiga en el frente.", "error"); return; }
+
+                if (roll > morale) {
+                    logEntry = `<div class="dice-log-entry"><b>🚩 Moral Enemiga (${name}):</b> 1d6 [${roll}] vs Mo ${morale}. <br>➔ <b style="color:#27ae60">¡PÁNICO! Modifica la tabla para retirarla y subir el Apoyo.</b></div>`;
+                } else {
+                    logEntry = `<div class="dice-log-entry"><b>🚩 Moral Enemiga (${name}):</b> 1d6 [${roll}] vs Mo ${morale}. <br>➔ <b style="color:var(--secondary)">¡FIRMES! Resta 1 punto de Moral al enemigo manualmente.</b></div>`;
+                }
+            }
+            
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory(); showToast("Chequeo de moral tirado.", "success");
+        }
+
+        // --- DADOS BÁSICOS (CON HISTORIAL) ---
         function rollQuickD6(count) { document.getElementById('dice-count').value = count; rollD6(); }
-
         function rollD6() {
             const count = parseInt(document.getElementById('dice-count').value) || 1;
             if(count < 1 || count > 20) { showToast("Elige entre 1 y 20 dados.", "error"); return; }
-
             let results = []; let total = 0;
-            for(let i=0; i<count; i++) {
-                const roll = Math.floor(Math.random() * 6) + 1;
-                results.push(roll); total += roll;
-            }
+            for(let i=0; i<count; i++) { const roll = Math.floor(Math.random() * 6) + 1; results.push(roll); total += roll; }
 
-            const logEntry = `<div class="dice-log-entry"><b>${count}d6:</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Total: ${total}</b></div>`;
-            state.diceHistory.unshift(logEntry);
-            if (state.diceHistory.length > 8) state.diceHistory.pop();
-
-            autoSave();
-            renderDiceHistory();
+            const logEntry = `<div class="dice-log-entry"><b>🎲 Tirada simple (${count}d6):</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Suma: ${total}</b></div>`;
+            state.diceHistory.unshift(logEntry); if (state.diceHistory.length > 8) state.diceHistory.pop();
+            autoSave(); renderDiceHistory();
         }
 
         function renderDiceHistory() {
             const resDiv = document.getElementById('dice-results');
-            if (state.diceHistory.length === 0) { resDiv.innerHTML = '<span style="color:#7f8c8d; font-size:0.8rem;">No hay tiradas recientes.</span>'; return; }
+            if (state.diceHistory.length === 0) { resDiv.innerHTML = '<span style="color:#7f8c8d; font-size:0.8rem; text-align:center; display:block; padding-top:10px;">No hay tiradas recientes.</span>'; return; }
             resDiv.innerHTML = state.diceHistory.join('');
+        }
+
+        // --- WIDGET DRAG & RESIZE ---
+        function initDiceWidget() {
+            const widget = document.getElementById('dice-widget');
+            const header = widget.querySelector('h3');
+            
+            // Drag Logic
+            header.addEventListener('mousedown', e => {
+                e.preventDefault();
+                let startX = e.clientX; let startY = e.clientY;
+                const rect = widget.getBoundingClientRect();
+                
+                if (widget.style.bottom) {
+                    widget.style.top = rect.top + 'px'; widget.style.left = rect.left + 'px';
+                    widget.style.bottom = 'auto'; widget.style.right = 'auto';
+                }
+
+                function mouseMove(e) {
+                    widget.style.top = (widget.offsetTop + e.clientY - startY) + 'px';
+                    widget.style.left = (widget.offsetLeft + e.clientX - startX) + 'px';
+                    startX = e.clientX; startY = e.clientY;
+                }
+                function mouseUp() { document.removeEventListener('mousemove', mouseMove); document.removeEventListener('mouseup', mouseUp); }
+                document.addEventListener('mousemove', mouseMove); document.addEventListener('mouseup', mouseUp);
+            });
+
+            // Resize Logic a 4 esquinas
+            let isResizing = false; let currentHandle = null;
+            let startX, startY, startW, startH, startTop, startLeft;
+
+            document.querySelectorAll('.resizer').forEach(handle => {
+                handle.addEventListener('mousedown', e => {
+                    e.preventDefault(); e.stopPropagation();
+                    isResizing = true; currentHandle = e.target.className.split(' ')[1];
+                    startX = e.clientX; startY = e.clientY;
+                    
+                    const rect = widget.getBoundingClientRect();
+                    startW = rect.width; startH = rect.height; startTop = rect.top; startLeft = rect.left;
+
+                    if (widget.style.bottom) {
+                        widget.style.top = startTop + 'px'; widget.style.left = startLeft + 'px';
+                        widget.style.bottom = 'auto'; widget.style.right = 'auto';
+                    }
+                    document.addEventListener('mousemove', resizeMove); document.addEventListener('mouseup', resizeUp);
+                });
+            });
+
+            function resizeMove(e) {
+                if (!isResizing) return;
+                let newW = startW, newH = startH, newTop = startTop, newLeft = startLeft;
+
+                if (currentHandle.includes('r')) newW = startW + (e.clientX - startX);
+                if (currentHandle.includes('l')) { newW = startW - (e.clientX - startX); newLeft = startLeft + (e.clientX - startX); }
+                if (currentHandle.includes('b')) newH = startH + (e.clientY - startY);
+                if (currentHandle.includes('t')) { newH = startH - (e.clientY - startY); newTop = startTop + (e.clientY - startY); }
+
+                if (newW > 250) { widget.style.width = newW + 'px'; if (currentHandle.includes('l')) widget.style.left = newLeft + 'px'; }
+                if (newH > 200) { widget.style.height = newH + 'px'; if (currentHandle.includes('t')) widget.style.top = newTop + 'px'; }
+            }
+            function resizeUp() { isResizing = false; document.removeEventListener('mousemove', resizeMove); document.removeEventListener('mouseup', resizeUp); }
         }
 
         // --- GUARDAR Y CARGAR ---
@@ -780,9 +1108,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const loadedState = JSON.parse(e.target.result);
-                    state = loadedState;
-                    
+                    const loadedState = JSON.parse(e.target.result); state = loadedState;
                     if (state.isDarkMode === undefined) state.isDarkMode = false;
                     if (!state.activeMainTab) state.activeMainTab = 'personajes';
                     if (state.isVaultOpen === undefined) state.isVaultOpen = false;
@@ -791,10 +1117,30 @@
                     if (!state.armies) state.armies = [];
                     if (!state.enemies) state.enemies = [];
                     if (!state.diceHistory) state.diceHistory = [];
+                    if (state.activeNavalAlly === undefined) state.activeNavalAlly = -1;
+                    if (!state.navalEnemies) state.navalEnemies = [];
+                    
+                    if (!state.battlefield) {
+                        state.battlefield = JSON.parse(JSON.stringify(defaultState.battlefield));
+                    } else {
+                        ['left', 'center', 'right'].forEach(f => {
+                            let b = state.battlefield[f];
+                            if (b.enemyFrontName === undefined) {
+                                b.enemyFrontName = b.enemyName || ""; b.enemyFrontForce = b.enemyForce || 0; b.enemyFrontMorale = b.enemyMorale || 0;
+                                b.enemySupportName = ""; b.enemySupportForce = 0; b.enemySupportMorale = 0;
+                                b.allyFrontIdx = b.allyIdx !== undefined ? b.allyIdx : -1; b.allySupportIdx = -1;
+                            }
+                        });
+                    }
                     
                     state.characters.forEach(char => {
                         if (char.maxHp === undefined) char.maxHp = char.hp || 0;
                         if (char.isDead === undefined) char.isDead = false;
+                    });
+                    state.enemies.forEach(en => {
+                        if (en.atk === undefined) en.atk = 0;
+                        if (en.successOn === undefined) en.successOn = 4;
+                        if (en.def === undefined) en.def = 0;
                     });
                     if(state.activeTab >= state.characters.length) state.activeTab = 0;
 
@@ -806,7 +1152,7 @@
 
         function newCampaign() {
             if(confirm("¿Estás seguro de que quieres borrar todos los datos y empezar una nueva campaña? Los datos no guardados se perderán.")){
-                const keepDarkMode = state.isDarkMode; // Mantener la preferencia de luz
+                const keepDarkMode = state.isDarkMode; 
                 state = JSON.parse(JSON.stringify(defaultState));
                 state.isDarkMode = keepDarkMode; 
                 autoSave(); renderAll(); showToast("Nueva campaña iniciada.", "success");
@@ -831,16 +1177,16 @@
             renderDiceHistory();
         }
 
-        window.onload = renderAll;
+        window.onload = () => {
+            renderAll();
+            initDiceWidget();
+        };
 
-        // PWA - Registro del Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then(registration => {
                     console.log('ServiceWorker registrado con éxito: ', registration.scope);
-                }).catch(err => {
-                    console.log('Fallo al registrar el ServiceWorker: ', err);
-                });
+                }).catch(err => { console.log('Fallo al registrar el ServiceWorker: ', err); });
             });
         }
     </script>
