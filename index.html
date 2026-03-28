@@ -4,179 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legendary Kingdoms - Asistente de Campaña</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#5d4037">
+    <link rel="apple-touch-icon" href="icon.png">
+    
     <style>
-        /* Variables por defecto (Tema Libro 1 - Marrón) */
+        /* Variables por defecto (Modo Claro / Tema Libro 1) */
         :root {
-            --primary: #5d4037;
-            --secondary: #d84315;
-            --bg: #efebe9;
-            --text: #3e2723;
-            --border: #d7ccc8;
-            --surface: #ffffff;
-            --money-bg: #fbe9e7;
+            --primary: #5d4037; --secondary: #d84315; --bg: #efebe9;
+            --text: #3e2723; --border: #d7ccc8; --surface: #ffffff; --money-bg: #fbe9e7;
+            --tab-bg: rgba(0,0,0,0.05); --input-bg: #ffffff;
         }
-
-        /* Tema Libro 2 - Gris */
         body.theme-book2 {
-            --primary: #455a64;
-            --secondary: #546e7a;
-            --bg: #eceff1;
-            --text: #263238;
-            --border: #cfd8dc;
-            --money-bg: #e8eaed;
+            --primary: #455a64; --secondary: #546e7a; --bg: #eceff1;
+            --text: #263238; --border: #cfd8dc; --money-bg: #e8eaed;
+        }
+        body.theme-book3 {
+            --primary: #0277bd; --secondary: #00838f; --bg: #e1f5fe;
+            --text: #01579b; --border: #b3e5fc; --money-bg: #e0f7fa;
         }
 
-        /* Tema Libro 3 - Azul */
-        body.theme-book3 {
-            --primary: #0277bd;
-            --secondary: #00838f;
-            --bg: #e1f5fe;
-            --text: #01579b;
-            --border: #b3e5fc;
-            --money-bg: #e0f7fa;
+        /* MODO OSCURO (Sobrescribe las variables) */
+        body.dark-mode {
+            --primary: #8d6e63; /* Marrón más claro para que resalte */
+            --secondary: #ff7043;
+            --bg: #121212;
+            --text: #e0e0e0;
+            --border: #333333;
+            --surface: #1e1e1e;
+            --money-bg: #2c2c2c;
+            --tab-bg: #2a2a2a;
+            --input-bg: #2c2c2c;
         }
+        body.dark-mode.theme-book2 { --primary: #90a4ae; --secondary: #b0bec5; }
+        body.dark-mode.theme-book3 { --primary: #4fc3f7; --secondary: #81d4fa; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; transition: background-color 0.3s; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; transition: background-color 0.3s, color 0.3s; }
 
         /* Navegación Fija */
         nav {
-            background-color: var(--primary); color: white;
-            padding: 0.8rem 2rem; display: flex;
-            justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
+            background-color: var(--primary); color: white; padding: 0.8rem 2rem; display: flex;
+            justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4); transition: background-color 0.3s;
         }
         .brand { display: flex; align-items: center; gap: 1rem; }
         .brand img { height: 60px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
-        nav h1 { font-size: 1.5rem; margin: 0; }
+        nav h1 { font-size: 1.5rem; margin: 0; color: white; }
         .book-select {
             background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);
             padding: 0.4rem; border-radius: 4px; outline: none; font-weight: bold;
         }
         .book-select option { color: black; }
-
+        .nav-buttons { display: flex; gap: 0.5rem; align-items: center; }
         .nav-buttons button {
-            background-color: transparent; border: 1px solid white;
-            color: white; padding: 0.5rem 1rem; margin-left: 0.5rem;
+            background-color: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem;
             cursor: pointer; border-radius: 4px; transition: 0.3s;
         }
         .nav-buttons button:hover { background-color: white; color: var(--primary); }
+        
+        #btn-dark-mode { font-size: 1.2rem; padding: 0.4rem 0.6rem; border: none; background: rgba(0,0,0,0.2); }
+        #btn-dark-mode:hover { background: rgba(0,0,0,0.4); color: white; }
+
+        /* Notificaciones Elegantes (Toasts) */
+        #toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast {
+            background: #333; color: #fff; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-size: 0.95rem; font-weight: 600; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { background: #e74c3c; }
+        .toast.success { background: #2ecc71; }
 
         /* Layout Principal: 3 Columnas */
-        .app-layout {
-            display: flex; max-width: 1600px; margin: 2rem auto; padding: 0 1rem; gap: 2rem;
-            align-items: flex-start;
-        }
+        .app-layout { display: flex; max-width: 1600px; margin: 2rem auto; padding: 0 1rem; gap: 2rem; align-items: flex-start; }
         .sidebar-left, .sidebar-right { width: 300px; flex-shrink: 0; position: sticky; top: 100px; }
         .main-content { flex-grow: 1; min-width: 0; }
         
-        /* Secciones y Pestañas */
-        .section-box { background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .section-box { background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 2rem; transition: background 0.3s; border: 1px solid var(--border); }
         h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--primary); font-size: 1.2rem; }
         
-        /* Pestañas Principales (A todo el ancho, sin scroll) */
-        .tabs.main-tabs { 
-            display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; 
-            flex-wrap: nowrap; overflow: hidden; gap: 4px;
-        }
-        .tabs.main-tabs .tab {
-            flex: 1; text-align: center; white-space: normal; padding: 0.8rem 0.5rem; margin-right: 0;
-            display: flex; align-items: center; justify-content: center; line-height: 1.2;
-        }
-        
-        /* Pestañas de Personajes */
+        /* Pestañas Principales y de Personajes */
+        .tabs.main-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: nowrap; overflow: hidden; gap: 4px; }
+        .tabs.main-tabs .tab { flex: 1; text-align: center; white-space: normal; padding: 0.8rem 0.5rem; margin-right: 0; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
         .tabs.char-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; flex-wrap: wrap; }
-        
-        .tab { 
-            padding: 0.8rem 1.5rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; 
-            background: rgba(0,0,0,0.05); margin-right: 5px; border-radius: 4px 4px 0 0; transition: 0.2s; 
-            user-select: none;
-        }
+        .tab { padding: 0.8rem 1.5rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; background: var(--tab-bg); margin-right: 5px; border-radius: 4px 4px 0 0; transition: 0.2s; user-select: none; }
         .tab.active { background: var(--surface); border-color: var(--border); font-weight: bold; border-bottom: 1px solid var(--surface); margin-bottom: -1px; color: var(--primary); }
         .tab.dead { text-decoration: line-through; opacity: 0.6; color: #c0392b; background: #fadbd8; }
+        body.dark-mode .tab.dead { background: #4a2323; color: #ff8a80; }
         .tab.add-tab { background: #27ae60; color: white; font-weight: bold; border-radius: 4px 4px 0 0; }
         .tab.add-tab:hover { background: #2ecc71; }
         .tab.drag-over { border: 2px dashed var(--secondary); opacity: 0.8; }
 
-        /* Botón Eliminar Personaje (Discreto) */
-        .btn-delete-char { 
-            background: transparent; color: #7f8c8d; border: 1px solid transparent; 
-            padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
-            transition: 0.2s; text-decoration: underline; margin-bottom: 1rem; display: inline-block;
-        }
-        .btn-delete-char:hover { color: #c0392b; background: rgba(192, 57, 43, 0.1); }
+        .btn-delete-char { background: transparent; color: #7f8c8d; border: 1px solid transparent; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; text-decoration: underline; margin-bottom: 1rem; display: inline-block; }
+        .btn-delete-char:hover { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
         
-        /* Formulario de Personajes */
         .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         .form-group { margin-bottom: 1rem; }
         label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem; }
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 4px;
-            background: var(--surface); color: var(--text);
-        }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 4px; background: var(--input-bg); color: var(--text); transition: background 0.3s, color 0.3s; }
         textarea { resize: vertical; min-height: 100px; }
         
         table.stats-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
         table.stats-table th, table.stats-table td { border: 1px solid var(--border); padding: 0.5rem; text-align: center; }
-        table.stats-table th { background-color: var(--bg); color: var(--primary); }
+        table.stats-table th { background-color: var(--tab-bg); color: var(--primary); }
         table.stats-table input { width: 60px; text-align: center; }
 
-        .spellbook { display: none; background: rgba(0,0,0,0.02); padding: 1rem; border: 1px dashed var(--primary); border-radius: 4px; margin-top: 1rem; }
-        .spellbook.active { display: block; }
-
-        .death-checkbox-container {
-            display: inline-flex; align-items: center; gap: 5px;
-            font-size: 0.85rem; font-weight: normal; color: #7f8c8d;
-            cursor: pointer; padding: 5px 10px; border-radius: 4px;
-            background: rgba(0,0,0,0.03); border: 1px solid var(--border);
-            margin-top: 15px; transition: 0.2s;
+        /* Botones de atributos para tirar dados automáticos */
+        .btn-roll-stat { 
+            background: transparent; border: none; color: var(--primary); font-weight: bold;
+            cursor: pointer; text-decoration: underline; font-size: 0.95rem; padding: 5px; border-radius: 4px;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
         }
-        .death-checkbox-container:hover { background: rgba(0,0,0,0.06); }
+        .btn-roll-stat:hover { background: rgba(0,0,0,0.05); color: var(--secondary); }
+        body.dark-mode .btn-roll-stat:hover { background: rgba(255,255,255,0.05); }
 
-        /* Códigos de Progresión (Columna Izquierda) */
+        .spellbook { display: none; background: var(--tab-bg); padding: 1rem; border: 1px dashed var(--primary); border-radius: 4px; margin-top: 1rem; }
+        .spellbook.active { display: block; }
+        .death-checkbox-container { display: inline-flex; align-items: center; gap: 5px; font-size: 0.85rem; color: #7f8c8d; cursor: pointer; padding: 5px 10px; border-radius: 4px; background: var(--tab-bg); border: 1px solid var(--border); margin-top: 15px; transition: 0.2s; }
+        .death-checkbox-container:hover { opacity: 0.8; }
+
+        /* Códigos */
         .codes-section { padding: 1.5rem; }
         .codes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 5px; }
-        .code-box {
-            border: 1px solid var(--border); text-align: center; padding: 0.5rem 0;
-            font-size: 0.8rem; cursor: pointer; user-select: none; border-radius: 3px; background: var(--surface);
-            transition: 0.2s;
-        }
+        .code-box { border: 1px solid var(--border); text-align: center; padding: 0.5rem 0; font-size: 0.8rem; cursor: pointer; user-select: none; border-radius: 3px; background: var(--input-bg); transition: 0.2s; }
         .code-box.checked { background: var(--primary); color: white; text-decoration: line-through; border-color: var(--primary); }
 
-        /* Columna Derecha (Dinero y Bóveda) */
+        /* Columna Derecha (Dinero, Bóveda, Combate) */
         .right-section { padding: 1.5rem; margin-bottom: 1.5rem; }
         .money-input-group { display: flex; align-items: center; gap: 0.8rem; background: var(--money-bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
         .money-input-group input { width: 120px; font-size: 1.2rem; border: 1px solid var(--primary); font-weight: bold; }
         .vault-toggle-label { font-size: 1.1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--primary); }
         .vault-container { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
         .vault-container.active { display: block; }
-        .vault-container textarea { min-height: 250px; }
+        .vault-container textarea { min-height: 150px; }
 
         /* Flota y Ejércitos */
         .fleet-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
         .fleet-table th, .fleet-table td { border: 1px solid var(--border); padding: 0.5rem; }
-        .fleet-table th { background: var(--bg); color: var(--primary); }
+        .fleet-table th { background: var(--tab-bg); color: var(--primary); }
         .btn-add, .btn-delete { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-add { background: var(--secondary); color: white; }
-        .btn-delete { background: #7f8c8d; color: white; }
+        .btn-add { background: #27ae60; color: white; }
+        .btn-add:hover { background: #2ecc71; }
+        .btn-delete { background: #7f8c8d; color: white; font-weight: bold;}
+        .btn-delete:hover { background: #e74c3c; }
 
-        /* Dado D6 Widget */
+        /* Dado D6 Widget con Historial */
         .dice-widget {
-            position: fixed; bottom: 20px; right: 20px; background: var(--surface);
-            border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; width: 280px;
+            position: fixed; bottom: 20px; right: 20px; background: var(--surface); border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; width: 300px; max-height: 400px; display: flex; flex-direction: column; transition: background 0.3s;
         }
         .dice-widget h3 { margin-bottom: 0.5rem; font-size: 1rem; border-bottom: none; color: var(--primary); }
         .quick-dice { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
-        .quick-dice button { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0; cursor: pointer; border-radius: 3px; font-size: 0.85rem; font-weight: 600; transition: 0.2s;}
+        .quick-dice button { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0; cursor: pointer; border-radius: 3px; font-size: 0.85rem; font-weight: 600; transition: 0.2s;}
         .quick-dice button:hover { background: var(--primary); color: white; border-color: var(--primary); }
         .dice-controls { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; border-top: 1px solid var(--border); padding-top: 10px; }
         .dice-controls input { width: 60px; }
         .dice-controls button { background: var(--secondary); color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer; flex-grow: 1; font-weight: bold; }
-        .dice-results { font-size: 0.9rem; margin-top: 0.5rem; max-height: 80px; overflow-y: auto; }
-        .dice-total { font-weight: bold; font-size: 1.1rem; color: var(--secondary); text-align: center; margin-top: 0.5rem; }
+        .dice-controls button:hover { opacity: 0.9; }
+        .dice-results { font-size: 0.9rem; margin-top: 0.5rem; overflow-y: auto; flex-grow: 1; border-top: 1px dashed var(--border); padding-top: 5px; }
+        .dice-log-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--tab-bg); line-height: 1.3; }
 
         /* Responsividad */
         @media (max-width: 1100px) {
@@ -184,18 +171,21 @@
             .sidebar-left, .sidebar-right { width: 100%; position: static; }
             .tabs.main-tabs { overflow-x: auto; flex-wrap: nowrap; overflow-y: hidden; }
             .tabs.main-tabs .tab { padding: 0.8rem; font-size: 0.9rem; flex: 0 0 auto; }
+            .dice-widget { width: 250px; }
         }
         @media (max-width: 768px) {
             .grid-2col { grid-template-columns: 1fr; }
             .fleet-table { display: block; overflow-x: auto; }
             nav { flex-direction: column; gap: 1rem; align-items: stretch; }
             .brand { justify-content: space-between; flex-wrap: wrap; }
-            .nav-buttons { display: flex; justify-content: space-between; }
+            .nav-buttons { display: flex; justify-content: space-between; flex-wrap: wrap; }
             .nav-buttons button { margin: 0; flex-grow: 1; margin: 0 0.2rem; padding: 0.5rem; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body class="theme-book1">
+
+    <div id="toast-container"></div>
 
     <nav>
         <div class="brand">
@@ -210,7 +200,8 @@
         <div class="nav-buttons">
             <button onclick="saveCampaign()">Guardar</button>
             <button onclick="document.getElementById('file-upload').click()">Cargar</button>
-            <button onclick="newCampaign()">Nueva Campaña</button>
+            <button onclick="newCampaign()">Nueva</button>
+            <button id="btn-dark-mode" onclick="toggleDarkMode()" title="Alternar Modo Oscuro">🌙</button>
             <input type="file" id="file-upload" style="display:none" accept=".json" onchange="loadCampaign(event)">
         </div>
     </nav>
@@ -297,6 +288,12 @@
                     <textarea id="vault-notes" placeholder="Anota aquí objetos comunes, reliquias, llaves, gemas..." oninput="updateVault(this.value)"></textarea>
                 </div>
             </div>
+
+            <div class="section-box right-section">
+                <h2>⚔️ Enemigos en Combate</h2>
+                <div id="combat-tracker"></div>
+                <button class="btn-add" onclick="addEnemy()" style="width: 100%; margin-top: 10px;">+ Añadir Enemigo</button>
+            </div>
         </aside>
     </div>
 
@@ -326,17 +323,28 @@
             <button onclick="rollD6()">¡Lanzar!</button>
         </div>
         <div class="dice-results" id="dice-results"></div>
-        <div class="dice-total" id="dice-total"></div>
     </div>
 
     <script>
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            
+            void toast.offsetWidth; 
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         const officialCharacters = [
-            "Sar Jessica Dayne",
-            "Lord Ti'Quon",
-            "Tasha",
-            "Amelia Pass-Dayne",
-            "Akihiro",
-            "Brash"
+            "Sar Jessica Dayne", "Lord Ti'Quon", "Tasha", "Amelia Pass-Dayne", "Akihiro", "Brash"
         ];
         const magesList = ["Lord Ti'Quon", "Amelia Pass-Dayne"];
 
@@ -349,6 +357,7 @@
         });
 
         const defaultState = {
+            isDarkMode: false, // Guardado de preferencia de Modo Oscuro
             activeMainTab: 'personajes',
             currentBook: 1,
             money: 0,
@@ -359,16 +368,23 @@
             codes: { A: [], B: [], C: [] },
             fleet: [],
             armies: [],
+            enemies: [], 
+            diceHistory: [],
             characters: Array(4).fill(null).map(() => getNewCharacterTemplate())
         };
 
         let state = JSON.parse(localStorage.getItem('lk_campaign')) || JSON.parse(JSON.stringify(defaultState));
         
+        // Retrocompatibilidad
+        if (state.isDarkMode === undefined) state.isDarkMode = false;
         if (!state.activeMainTab) state.activeMainTab = 'personajes';
         if (state.isVaultOpen === undefined) state.isVaultOpen = false;
         if (state.vaultNotes === undefined) state.vaultNotes = "";
         if (!state.currentBook) state.currentBook = 1; 
         if (!state.armies) state.armies = [];
+        if (!state.enemies) state.enemies = [];
+        if (!state.diceHistory) state.diceHistory = [];
+        
         state.characters.forEach(char => {
             if (char.maxHp === undefined) char.maxHp = char.hp || 0;
             if (char.isDead === undefined) char.isDead = false;
@@ -377,6 +393,33 @@
 
         function autoSave() {
             localStorage.setItem('lk_campaign', JSON.stringify(state));
+        }
+
+        // --- MODO OSCURO ---
+        function toggleDarkMode() {
+            state.isDarkMode = !state.isDarkMode;
+            autoSave();
+            applyTheme();
+        }
+
+        function applyTheme() {
+            // Aplicar Libro
+            document.body.className = `theme-book${state.currentBook}`;
+            document.getElementById('book-selector').value = state.currentBook;
+            
+            const coverImg = document.getElementById('book-cover');
+            if(state.currentBook === 1) coverImg.src = '1-el valle de los huesos.jpg';
+            else if(state.currentBook === 2) coverImg.src = '2-corona y torre.jpg';
+            else if(state.currentBook === 3) coverImg.src = '3-piratas de las islas fragmentadas.jpg';
+
+            // Aplicar Modo Oscuro encima del tema del libro
+            if (state.isDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('btn-dark-mode').innerText = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('btn-dark-mode').innerText = '🌙';
+            }
         }
 
         function switchMainTab(tabId) {
@@ -398,16 +441,6 @@
             autoSave();
             applyTheme();
             renderCodes();
-        }
-
-        function applyTheme() {
-            document.body.className = `theme-book${state.currentBook}`;
-            document.getElementById('book-selector').value = state.currentBook;
-            
-            const coverImg = document.getElementById('book-cover');
-            if(state.currentBook === 1) coverImg.src = '1-el valle de los huesos.jpg';
-            else if(state.currentBook === 2) coverImg.src = '2-corona y torre.jpg';
-            else if(state.currentBook === 3) coverImg.src = '3-piratas de las islas fragmentadas.jpg';
         }
 
         function updateMoney(val) { state.money = val; autoSave(); }
@@ -453,12 +486,7 @@
             }
         }
 
-        function handleDragStart(e) {
-            draggedTabIndex = parseInt(this.dataset.index);
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => this.style.opacity = '0.4', 0);
-        }
-
+        function handleDragStart(e) { draggedTabIndex = parseInt(this.dataset.index); e.dataTransfer.effectAllowed = 'move'; setTimeout(() => this.style.opacity = '0.4', 0); }
         function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
         function handleDragEnter(e) { if(this !== e.target) this.classList.add('drag-over'); }
         function handleDragLeave(e) { this.classList.remove('drag-over'); }
@@ -466,23 +494,16 @@
         function handleDrop(e) {
             e.stopPropagation();
             this.classList.remove('drag-over');
-            
             const targetIndex = parseInt(this.dataset.index);
-            
             if (draggedTabIndex !== null && draggedTabIndex !== targetIndex) {
                 const char = state.characters.splice(draggedTabIndex, 1)[0];
                 state.characters.splice(targetIndex, 0, char);
                 
-                if (state.activeTab === draggedTabIndex) {
-                    state.activeTab = targetIndex;
-                } else if (state.activeTab > draggedTabIndex && state.activeTab <= targetIndex) {
-                    state.activeTab--;
-                } else if (state.activeTab < draggedTabIndex && state.activeTab >= targetIndex) {
-                    state.activeTab++;
-                }
+                if (state.activeTab === draggedTabIndex) { state.activeTab = targetIndex; } 
+                else if (state.activeTab > draggedTabIndex && state.activeTab <= targetIndex) { state.activeTab--; } 
+                else if (state.activeTab < draggedTabIndex && state.activeTab >= targetIndex) { state.activeTab++; }
                 
-                autoSave();
-                renderAll();
+                autoSave(); renderAll();
             }
             return false;
         }
@@ -496,96 +517,95 @@
 
         function addCharacter() {
             const livingCount = state.characters.filter(c => !c.isDead).length;
-            if (livingCount >= 4) {
-                alert("Ya tienes 4 personajes vivos. No puedes añadir más.");
-                return;
-            }
+            if (livingCount >= 4) { showToast("Ya tienes 4 personajes vivos. No puedes añadir más.", "error"); return; }
             
             const newChar = getNewCharacterTemplate();
             const firstDeadIndex = state.characters.findIndex(c => c.isDead);
             
-            if (firstDeadIndex !== -1) {
-                state.characters.splice(firstDeadIndex, 0, newChar);
-                state.activeTab = firstDeadIndex;
-            } else {
-                state.characters.push(newChar);
-                state.activeTab = state.characters.length - 1;
-            }
+            if (firstDeadIndex !== -1) { state.characters.splice(firstDeadIndex, 0, newChar); state.activeTab = firstDeadIndex; } 
+            else { state.characters.push(newChar); state.activeTab = state.characters.length - 1; }
             
-            autoSave();
-            renderAll();
+            autoSave(); renderAll(); showToast("Personaje añadido.", "success");
         }
 
         function deleteCharacter(idx) {
             if (confirm("¿Estás seguro de que quieres eliminar esta pestaña de personaje de forma permanente?")) {
                 state.characters.splice(idx, 1);
-                if (state.activeTab >= state.characters.length) {
-                    state.activeTab = Math.max(0, state.characters.length - 1);
-                }
-                autoSave();
-                renderAll();
+                if (state.activeTab >= state.characters.length) { state.activeTab = Math.max(0, state.characters.length - 1); }
+                autoSave(); renderAll(); showToast("Personaje eliminado.", "success");
             }
         }
 
         function toggleDeath(idx, isDead) {
             if (!isDead) {
                 const livingCount = state.characters.filter(c => !c.isDead).length;
-                if (livingCount >= 4) {
-                    alert("Ya hay 4 personajes vivos. No puedes revivir a este personaje sin antes matar a otro.");
-                    renderAll(); 
-                    return;
-                }
+                if (livingCount >= 4) { showToast("Ya hay 4 personajes vivos. No puedes revivir a este personaje.", "error"); renderAll(); return; }
             }
-
             state.characters[idx].isDead = isDead;
-
             if (isDead) {
                 const deadChar = state.characters.splice(idx, 1)[0];
                 state.characters.push(deadChar);
                 state.activeTab = state.characters.length - 1;
             }
+            autoSave(); renderAll();
+        }
 
+        // --- TIRADAS AUTOMÁTICAS DESDE ATRIBUTOS ---
+        function rollAttribute(charIdx, statName) {
+            const char = state.characters[charIdx];
+            const diceCount = parseInt(char.stats[statName][1]) || 0; // Valor "Modificado"
+
+            if (diceCount < 1) {
+                showToast(`${char.name || 'El personaje'} tiene 0 en el modificado de ${statName}.`, "error");
+                return;
+            }
+
+            let results = [];
+            let total = 0;
+            for(let i=0; i<diceCount; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                results.push(roll);
+                total += roll;
+            }
+
+            const charName = char.name || `Personaje ${charIdx + 1}`;
+            const logEntry = `<div class="dice-log-entry"><b>${charName} tira ${statName} (${diceCount}d6):</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Total: ${total}</b></div>`;
+            
+            state.diceHistory.unshift(logEntry);
+            if (state.diceHistory.length > 8) state.diceHistory.pop();
+            
             autoSave();
-            renderAll();
+            renderDiceHistory();
+            showToast(`¡Tirada de ${statName} completada!`, "success");
         }
 
         function renderActiveCharacter() {
             const container = document.getElementById('character-content');
-            
-            if (state.characters.length === 0) {
-                container.innerHTML = '<p>No hay personajes. Añade uno para empezar.</p>';
-                return;
-            }
+            if (state.characters.length === 0) { container.innerHTML = '<p>No hay personajes. Añade uno para empezar.</p>'; return; }
 
             const char = state.characters[state.activeTab];
             const cIndex = state.activeTab;
             const isMage = magesList.includes(char.name);
 
-            let optionsHtml = '';
-            officialCharacters.forEach(name => {
-                optionsHtml += `<option value="${name}">`;
-            });
+            let optionsHtml = ''; officialCharacters.forEach(name => { optionsHtml += `<option value="${name}">`; });
 
             let statsHtml = '';
             for (const [stat, vals] of Object.entries(char.stats)) {
-                statsHtml += `
-                    <tr>
-                        <td>${stat}</td>
-                        <td><input type="number" value="${vals[0]}" oninput="updateStat(${cIndex}, '${stat}', 0, this.value)"></td>
-                        <td><input type="number" value="${vals[1]}" oninput="updateStat(${cIndex}, '${stat}', 1, this.value)"></td>
-                    </tr>`;
+                // El td del stat ahora es un botón
+                statsHtml += `<tr>
+                    <td><button onclick="rollAttribute(${cIndex}, '${stat}')" class="btn-roll-stat" title="Tirar ${vals[1]}d6 por el valor modificado">🎲 ${stat}</button></td>
+                    <td><input type="number" value="${vals[0]}" oninput="updateStat(${cIndex}, '${stat}', 0, this.value)"></td>
+                    <td><input type="number" value="${vals[1]}" oninput="updateStat(${cIndex}, '${stat}', 1, this.value)"></td>
+                </tr>`;
             }
 
             let equipHtml = '';
-            char.equipment.forEach((item, i) => {
-                equipHtml += `<div class="form-group"><input type="text" placeholder="Espacio ${i+1}" value="${item}" oninput="updateEquip(${cIndex}, ${i}, this.value)"></div>`;
-            });
+            char.equipment.forEach((item, i) => { equipHtml += `<div class="form-group"><input type="text" placeholder="Espacio ${i+1}" value="${item}" oninput="updateEquip(${cIndex}, ${i}, this.value)"></div>`; });
 
             let spellsHtml = '';
             char.spells.forEach((spell, i) => {
                 const rechargeValue = spell.recharge !== undefined ? spell.recharge : "";
-                spellsHtml += `
-                    <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
+                spellsHtml += `<div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
                         <input type="text" placeholder="Nombre del Hechizo" value="${spell.name}" oninput="updateSpellName(${cIndex}, ${i}, this.value)" style="flex-grow:1;">
                         <input type="text" placeholder="Recarga" value="${rechargeValue}" oninput="updateSpellRecharge(${cIndex}, ${i}, this.value)" style="width: 80px;" title="Coste/Valor de Recarga">
                         <label style="margin:0; white-space:nowrap;"><input type="checkbox" ${spell.ready ? 'checked' : ''} onchange="updateSpellReady(${cIndex}, ${i}, this.checked)"> Disponible</label>
@@ -593,10 +613,9 @@
             });
 
             container.innerHTML = `
-                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: flex-end;">
                     <button class="btn-delete-char" onclick="deleteCharacter(${cIndex})" title="Eliminar este personaje permanentemente">🗑️ Eliminar pestaña</button>
                 </div>
-
                 <div class="grid-2col">
                     <div>
                         <div class="form-group">
@@ -604,7 +623,6 @@
                             <input type="text" list="official-chars-list" value="${char.name}" placeholder="Elige o escribe un nombre..." onchange="updateCharName(${cIndex}, this.value)">
                             <datalist id="official-chars-list">${optionsHtml}</datalist>
                         </div>
-
                         <div style="display:flex; gap: 1rem; margin-top: 1rem;">
                             <div class="form-group" style="flex: 2;">
                                 <label>Puntos de Salud (Actual / Máx)</label>
@@ -614,37 +632,15 @@
                                     <input type="number" value="${char.maxHp}" oninput="updateCharProp(${cIndex}, 'maxHp', this.value)" title="Salud Máxima">
                                 </div>
                             </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Armadura</label>
-                                <input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)">
-                            </div>
+                            <div class="form-group" style="flex: 1;"><label>Armadura</label><input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)"></div>
                         </div>
-
-                        <table class="stats-table">
-                            <thead><tr><th>Atributo</th><th>Habilidad</th><th>Modificado</th></tr></thead>
-                            <tbody>${statsHtml}</tbody>
-                        </table>
-                        
-                        <div class="spellbook ${isMage ? 'active' : ''}">
-                            <h3 style="margin-bottom:10px; font-size:1rem; color: var(--primary);">Libro de Hechizos</h3>
-                            ${spellsHtml}
-                        </div>
-
-                        <div style="text-align: right;">
-                            <label class="death-checkbox-container" title="Marcar este personaje como fallecido">
-                                <input type="checkbox" ${char.isDead ? 'checked' : ''} onchange="toggleDeath(${cIndex}, this.checked)">
-                                💀 Personaje Fallecido
-                            </label>
-                        </div>
-
+                        <table class="stats-table"><thead><tr><th>Atributo</th><th>Habilidad</th><th>Modificado</th></tr></thead><tbody>${statsHtml}</tbody></table>
+                        <div class="spellbook ${isMage ? 'active' : ''}"><h3 style="margin-bottom:10px; font-size:1rem; color: var(--primary);">Libro de Hechizos</h3>${spellsHtml}</div>
+                        <div style="text-align: right;"><label class="death-checkbox-container" title="Marcar este personaje como fallecido"><input type="checkbox" ${char.isDead ? 'checked' : ''} onchange="toggleDeath(${cIndex}, this.checked)">💀 Personaje Fallecido</label></div>
                     </div>
                     <div>
-                        <h3 style="margin-bottom:1rem; font-size:1rem; color: var(--primary);">Equipamiento (10 espacios)</h3>
-                        ${equipHtml}
-                        <div class="form-group" style="margin-top:1rem;">
-                            <label>Notas de personaje</label>
-                            <textarea oninput="updateCharProp(${cIndex}, 'notes', this.value)">${char.notes}</textarea>
-                        </div>
+                        <h3 style="margin-bottom:1rem; font-size:1rem; color: var(--primary);">Equipamiento (10 espacios)</h3>${equipHtml}
+                        <div class="form-group" style="margin-top:1rem;"><label>Notas de personaje</label><textarea oninput="updateCharProp(${cIndex}, 'notes', this.value)">${char.notes}</textarea></div>
                     </div>
                 </div>
             `;
@@ -655,11 +651,7 @@
         function updateStat(idx, stat, col, val) { state.characters[idx].stats[stat][col] = val; autoSave(); }
         function updateEquip(idx, eqIdx, val) { state.characters[idx].equipment[eqIdx] = val; autoSave(); }
         function updateSpellName(idx, sIdx, val) { state.characters[idx].spells[sIdx].name = val; autoSave(); }
-        function updateSpellRecharge(idx, sIdx, val) { 
-            if(state.characters[idx].spells[sIdx].recharge === undefined) state.characters[idx].spells[sIdx].recharge = "";
-            state.characters[idx].spells[sIdx].recharge = val; 
-            autoSave(); 
-        }
+        function updateSpellRecharge(idx, sIdx, val) { if(state.characters[idx].spells[sIdx].recharge === undefined) state.characters[idx].spells[sIdx].recharge = ""; state.characters[idx].spells[sIdx].recharge = val; autoSave(); }
         function updateSpellReady(idx, sIdx, val) { state.characters[idx].spells[sIdx].ready = val; autoSave(); }
         function updateNotes(val) { state.notes = val; autoSave(); }
 
@@ -667,47 +659,64 @@
             const container = document.getElementById('active-grid');
             const title = document.getElementById('codes-title');
             container.innerHTML = '';
-            
-            let prefix = 'A';
-            let max = 100;
-
+            let prefix = 'A'; let max = 100;
             if(state.currentBook === 1) { prefix = 'A'; max = 100; title.innerText = 'Libro 1 (A1 - A100)'; }
             else if(state.currentBook === 2) { prefix = 'B'; max = 110; title.innerText = 'Libro 2 (B1 - B110)'; }
             else if(state.currentBook === 3) { prefix = 'C'; max = 100; title.innerText = 'Libro 3 (C1 - C100)'; }
-
             for (let i = 1; i <= max; i++) {
-                const code = `${prefix}${i}`;
-                const isChecked = state.codes[prefix].includes(i);
-                const div = document.createElement('div');
-                div.className = `code-box ${isChecked ? 'checked' : ''}`;
-                div.textContent = code;
-                div.onclick = () => toggleCode(prefix, i, div);
-                container.appendChild(div);
+                const code = `${prefix}${i}`; const isChecked = state.codes[prefix].includes(i);
+                const div = document.createElement('div'); div.className = `code-box ${isChecked ? 'checked' : ''}`; div.textContent = code;
+                div.onclick = () => toggleCode(prefix, i, div); container.appendChild(div);
             }
         }
-
         function toggleCode(prefix, num, el) {
-            const arr = state.codes[prefix];
-            const idx = arr.indexOf(num);
+            const arr = state.codes[prefix]; const idx = arr.indexOf(num);
             if (idx > -1) { arr.splice(idx, 1); el.classList.remove('checked'); } 
             else { arr.push(num); el.classList.add('checked'); }
             autoSave();
         }
 
-        function renderFleet() {
-            const tbody = document.getElementById('fleet-body');
-            tbody.innerHTML = '';
-            state.fleet.forEach((ship, i) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><input type="text" value="${ship.name}" oninput="updateFleet(${i}, 'name', this.value)" style="width:100%"></td>
-                        <td><input type="number" value="${ship.combat}" oninput="updateFleet(${i}, 'combat', this.value)"></td>
-                        <td><input type="number" value="${ship.hp}" oninput="updateFleet(${i}, 'hp', this.value)"></td>
-                        <td><input type="number" value="${ship.cargo}" oninput="updateFleet(${i}, 'cargo', this.value)"></td>
-                        <td><input type="text" value="${ship.location}" oninput="updateFleet(${i}, 'location', this.value)" style="width:100%"></td>
-                        <td><button class="btn-delete" onclick="removeShip(${i})">Borrar</button></td>
-                    </tr>
+        // --- COMBATE ---
+        function renderEnemies() {
+            const container = document.getElementById('combat-tracker');
+            container.innerHTML = '';
+            
+            if (state.enemies.length > 0) {
+                container.innerHTML += `
+                    <div style="display: flex; gap: 5px; margin-bottom: 5px; font-size: 0.85rem; font-weight: bold; color: var(--primary);">
+                        <div style="flex: 2; padding-left: 2px;">Nombre del Enemigo</div>
+                        <div style="flex: 1; padding-left: 2px;">Vida</div>
+                        <div style="width: 28px;"></div>
+                    </div>
                 `;
+            }
+
+            state.enemies.forEach((enemy, i) => {
+                container.innerHTML += `
+                    <div style="display: flex; gap: 5px; margin-bottom: 8px; align-items: center;">
+                        <input type="text" value="${enemy.name}" placeholder="Ej. Guardia" oninput="updateEnemy(${i}, 'name', this.value)" style="flex: 2; padding: 0.4rem;">
+                        <input type="number" value="${enemy.hp}" placeholder="0" oninput="updateEnemy(${i}, 'hp', this.value)" style="flex: 1; padding: 0.4rem;">
+                        <button class="btn-delete" onclick="removeEnemy(${i})" style="padding: 0.4rem; border-radius: 4px; width: 28px; text-align: center;" title="Eliminar">X</button>
+                    </div>
+                `;
+            });
+        }
+        function addEnemy() { state.enemies.push({ name: "", hp: 0 }); autoSave(); renderEnemies(); }
+        function updateEnemy(idx, prop, val) { state.enemies[idx][prop] = val; autoSave(); }
+        function removeEnemy(idx) { state.enemies.splice(idx, 1); autoSave(); renderEnemies(); }
+
+        // --- FLOTA Y EJÉRCITOS ---
+        function renderFleet() {
+            const tbody = document.getElementById('fleet-body'); tbody.innerHTML = '';
+            state.fleet.forEach((ship, i) => {
+                tbody.innerHTML += `<tr>
+                    <td><input type="text" value="${ship.name}" oninput="updateFleet(${i}, 'name', this.value)" style="width:100%"></td>
+                    <td><input type="number" value="${ship.combat}" oninput="updateFleet(${i}, 'combat', this.value)"></td>
+                    <td><input type="number" value="${ship.hp}" oninput="updateFleet(${i}, 'hp', this.value)"></td>
+                    <td><input type="number" value="${ship.cargo}" oninput="updateFleet(${i}, 'cargo', this.value)"></td>
+                    <td><input type="text" value="${ship.location}" oninput="updateFleet(${i}, 'location', this.value)" style="width:100%"></td>
+                    <td><button class="btn-delete" onclick="removeShip(${i})">X</button></td>
+                </tr>`;
             });
         }
         function addShip() { state.fleet.push({ name: "", combat: 0, hp: 0, cargo: 0, location: "" }); renderFleet(); autoSave(); }
@@ -715,105 +724,100 @@
         function removeShip(idx) { if(confirm('¿Eliminar este barco?')){ state.fleet.splice(idx, 1); renderFleet(); autoSave(); } }
 
         function renderArmies() {
-            const tbody = document.getElementById('army-body');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('army-body'); tbody.innerHTML = '';
             state.armies.forEach((army, i) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><input type="text" value="${army.unit}" oninput="updateArmy(${i}, 'unit', this.value)" style="width:100%"></td>
-                        <td><input type="number" value="${army.force}" oninput="updateArmy(${i}, 'force', this.value)"></td>
-                        <td><input type="number" value="${army.morale}" oninput="updateArmy(${i}, 'morale', this.value)"></td>
-                        <td><input type="text" value="${army.garrison}" oninput="updateArmy(${i}, 'garrison', this.value)" style="width:100%"></td>
-                        <td><button class="btn-delete" onclick="removeArmy(${i})">Borrar</button></td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr>
+                    <td><input type="text" value="${army.unit}" oninput="updateArmy(${i}, 'unit', this.value)" style="width:100%"></td>
+                    <td><input type="number" value="${army.force}" oninput="updateArmy(${i}, 'force', this.value)"></td>
+                    <td><input type="number" value="${army.morale}" oninput="updateArmy(${i}, 'morale', this.value)"></td>
+                    <td><input type="text" value="${army.garrison}" oninput="updateArmy(${i}, 'garrison', this.value)" style="width:100%"></td>
+                    <td><button class="btn-delete" onclick="removeArmy(${i})">X</button></td>
+                </tr>`;
             });
         }
         function addArmy() { state.armies.push({ unit: "", force: 0, morale: 0, garrison: "" }); renderArmies(); autoSave(); }
         function updateArmy(idx, prop, val) { state.armies[idx][prop] = val; autoSave(); }
         function removeArmy(idx) { if(confirm('¿Eliminar esta unidad?')){ state.armies.splice(idx, 1); renderArmies(); autoSave(); } }
 
-        function rollQuickD6(count) {
-            document.getElementById('dice-count').value = count;
-            rollD6();
-        }
+        // --- DADOS (CON HISTORIAL) ---
+        function rollQuickD6(count) { document.getElementById('dice-count').value = count; rollD6(); }
 
         function rollD6() {
             const count = parseInt(document.getElementById('dice-count').value) || 1;
-            const resDiv = document.getElementById('dice-results');
-            const totDiv = document.getElementById('dice-total');
-            
-            if(count < 1 || count > 20) { alert("Elige entre 1 y 20 dados."); return; }
+            if(count < 1 || count > 20) { showToast("Elige entre 1 y 20 dados.", "error"); return; }
 
-            let results = [];
-            let total = 0;
+            let results = []; let total = 0;
             for(let i=0; i<count; i++) {
                 const roll = Math.floor(Math.random() * 6) + 1;
-                results.push(roll);
-                total += roll;
+                results.push(roll); total += roll;
             }
 
-            resDiv.innerHTML = `Tiradas: [ ${results.join(', ')} ]`;
-            totDiv.innerHTML = `Suma Total: ${total}`;
+            const logEntry = `<div class="dice-log-entry"><b>${count}d6:</b> [${results.join(', ')}] <br> ➔ <b style="color:var(--secondary)">Total: ${total}</b></div>`;
+            state.diceHistory.unshift(logEntry);
+            if (state.diceHistory.length > 8) state.diceHistory.pop();
+
+            autoSave();
+            renderDiceHistory();
         }
 
+        function renderDiceHistory() {
+            const resDiv = document.getElementById('dice-results');
+            if (state.diceHistory.length === 0) { resDiv.innerHTML = '<span style="color:#7f8c8d; font-size:0.8rem;">No hay tiradas recientes.</span>'; return; }
+            resDiv.innerHTML = state.diceHistory.join('');
+        }
+
+        // --- GUARDAR Y CARGAR ---
         function saveCampaign() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            const date = new Date().toISOString().slice(0,10);
-            downloadAnchorNode.setAttribute("download", `legendary_kingdoms_save_${date}.json`);
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
+            const downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr);
+            const date = new Date().toISOString().slice(0,10); downloadAnchorNode.setAttribute("download", `legendary_kingdoms_save_${date}.json`);
+            document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
+            showToast("Partida exportada con éxito", "success");
         }
 
         function loadCampaign(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const loadedState = JSON.parse(e.target.result);
                     state = loadedState;
                     
+                    if (state.isDarkMode === undefined) state.isDarkMode = false;
                     if (!state.activeMainTab) state.activeMainTab = 'personajes';
                     if (state.isVaultOpen === undefined) state.isVaultOpen = false;
                     if (state.vaultNotes === undefined) state.vaultNotes = "";
                     if (!state.currentBook) state.currentBook = 1;
                     if (!state.armies) state.armies = [];
+                    if (!state.enemies) state.enemies = [];
+                    if (!state.diceHistory) state.diceHistory = [];
+                    
                     state.characters.forEach(char => {
                         if (char.maxHp === undefined) char.maxHp = char.hp || 0;
                         if (char.isDead === undefined) char.isDead = false;
                     });
                     if(state.activeTab >= state.characters.length) state.activeTab = 0;
 
-                    autoSave();
-                    renderAll();
-                    alert('Campaña cargada con éxito.');
-                } catch (err) {
-                    alert('Error al leer el archivo. Asegúrate de que es un archivo de guardado válido.');
-                }
+                    autoSave(); renderAll(); showToast('Campaña cargada con éxito.', 'success');
+                } catch (err) { showToast('Error al leer el archivo. Asegúrate de que es un archivo válido.', 'error'); }
             };
-            reader.readAsText(file);
-            event.target.value = ""; 
+            reader.readAsText(file); event.target.value = ""; 
         }
 
         function newCampaign() {
             if(confirm("¿Estás seguro de que quieres borrar todos los datos y empezar una nueva campaña? Los datos no guardados se perderán.")){
+                const keepDarkMode = state.isDarkMode; // Mantener la preferencia de luz
                 state = JSON.parse(JSON.stringify(defaultState));
-                autoSave();
-                renderAll();
+                state.isDarkMode = keepDarkMode; 
+                autoSave(); renderAll(); showToast("Nueva campaña iniciada.", "success");
             }
         }
 
         function renderAll() {
             document.getElementById('global-money-input').value = state.money;
-            
             document.getElementById('vault-toggle').checked = state.isVaultOpen;
             document.getElementById('vault-container').classList.toggle('active', state.isVaultOpen);
             document.getElementById('vault-notes').value = state.vaultNotes;
-            
             document.getElementById('global-notes').value = state.notes;
             
             applyTheme(); 
@@ -821,11 +825,24 @@
             renderCharacterTabs();
             renderActiveCharacter();
             renderCodes(); 
+            renderEnemies();
             renderFleet();
             renderArmies(); 
+            renderDiceHistory();
         }
 
         window.onload = renderAll;
+
+        // PWA - Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(registration => {
+                    console.log('ServiceWorker registrado con éxito: ', registration.scope);
+                }).catch(err => {
+                    console.log('Fallo al registrar el ServiceWorker: ', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
