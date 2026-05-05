@@ -134,13 +134,24 @@
         .combat-module-box { background: var(--bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); }
         .combat-module-title { color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
 
-        /* Dado D6 Widget (Flotante y Redimensionable a 4 esquinas) */
+        /* Dado D6 Widget (Flotante, Táctil y Redimensionable a 4 esquinas) */
         .dice-widget {
             position: fixed; bottom: 20px; right: 20px; background: var(--surface); border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; width: 300px; height: 380px; min-width: 250px; min-height: 250px; display: flex; flex-direction: column; 
         }
-        .dice-widget h3 { margin-bottom: 0.5rem; font-size: 1rem; border-bottom: none; color: var(--primary); cursor: grab; padding-bottom: 5px; border-bottom: 1px solid var(--border); user-select: none; }
-        .dice-widget h3:active { cursor: grabbing; }
+        
+        /* Modificador principal para minimizar */
+        .dice-widget.minimized {
+            height: 45px !important; min-height: 0 !important; padding-bottom: 0 !important; overflow: hidden;
+        }
+        .dice-widget.minimized #dice-content-wrapper,
+        .dice-widget.minimized .resizer {
+            display: none !important;
+        }
+
+        .dice-widget h3 { margin-bottom: 0; font-size: 1rem; color: var(--primary); border-bottom: 1px solid var(--border); user-select: none; display: flex; justify-content: space-between; align-items: center;}
+        .dice-widget h3 span { cursor: grab; padding-bottom: 5px; flex-grow: 1; }
+        .dice-widget h3 span:active { cursor: grabbing; }
         
         .resizer { position: absolute; width: 15px; height: 15px; z-index: 10; background: transparent; }
         .resizer-tl { top: 0; left: 0; cursor: nwse-resize; }
@@ -167,6 +178,7 @@
             .sidebar-left, .sidebar-right { width: 100%; position: static; }
             .tabs.main-tabs { overflow-x: auto; flex-wrap: nowrap; overflow-y: hidden; }
             .tabs.main-tabs .tab { padding: 0.8rem; font-size: 0.9rem; flex: 0 0 auto; }
+            .dice-widget { width: 280px; height: 300px; }
         }
         @media (max-width: 768px) {
             .grid-2col { grid-template-columns: 1fr; }
@@ -202,6 +214,7 @@
     </nav>
 
     <div class="app-layout">
+        <!-- COLUMNA IZQUIERDA: Códigos -->
         <aside class="sidebar-left">
             <div class="section-box codes-section">
                 <h2 id="codes-title">Códigos</h2>
@@ -209,6 +222,7 @@
             </div>
         </aside>
 
+        <!-- COLUMNA CENTRAL: Contenido Principal -->
         <main class="main-content">
             
             <div class="tabs main-tabs">
@@ -245,6 +259,7 @@
                 </table>
                 <button class="btn-add" onclick="addShip()">+ Añadir Barco</button>
 
+                <!-- Módulo Combate Naval -->
                 <div id="naval-combat-container" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px dashed var(--border);"></div>
             </div>
 
@@ -264,11 +279,13 @@
                 </table>
                 <button class="btn-add" onclick="addArmy()">+ Añadir Unidad</button>
 
+                <!-- Módulo Campo de Batalla -->
                 <div id="battlefield-container" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px dashed var(--border);"></div>
             </div>
 
         </main>
 
+        <!-- COLUMNA DERECHA: Dinero, Bóveda y Combate -->
         <aside class="sidebar-right">
             <div class="section-box right-section">
                 <h2>Dinero</h2>
@@ -296,37 +313,43 @@
         </aside>
     </div>
 
+    <!-- Dado D6 Widget -->
     <div class="dice-widget" id="dice-widget">
         <div class="resizer resizer-tl"></div>
         <div class="resizer resizer-tr"></div>
         <div class="resizer resizer-bl"></div>
         <div class="resizer resizer-br"></div>
         
-        <h3 title="Arrastra para mover">Lanzador D6 ✥</h3>
+        <h3>
+            <span title="Arrastra para mover">Lanzador D6 ✥</span>
+            <button id="btn-toggle-dice" onclick="toggleDiceWidget()" style="background:transparent; border:none; color:inherit; cursor:pointer; font-size:1.2rem; padding: 0 5px;" title="Minimizar">➖</button>
+        </h3>
         
-        <div class="quick-dice">
-            <button onclick="rollQuickD6(1)">1d6</button>
-            <button onclick="rollQuickD6(2)">2d6</button>
-            <button onclick="rollQuickD6(3)">3d6</button>
-            <button onclick="rollQuickD6(4)">4d6</button>
-            <button onclick="rollQuickD6(5)">5d6</button>
-            <button onclick="rollQuickD6(6)">6d6</button>
-            <button onclick="rollQuickD6(7)">7d6</button>
-            <button onclick="rollQuickD6(8)">8d6</button>
-            <button onclick="rollQuickD6(9)">9d6</button>
-            <button onclick="rollQuickD6(10)">10d6</button>
-            <button onclick="rollQuickD6(11)">11d6</button>
-            <button onclick="rollQuickD6(12)">12d6</button>
-            <button onclick="rollQuickD6(13)">13d6</button>
-            <button onclick="rollQuickD6(14)">14d6</button>
-            <button onclick="rollQuickD6(15)">15d6</button>
-        </div>
+        <div id="dice-content-wrapper" style="display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
+            <div class="quick-dice">
+                <button onclick="rollQuickD6(1)">1d6</button>
+                <button onclick="rollQuickD6(2)">2d6</button>
+                <button onclick="rollQuickD6(3)">3d6</button>
+                <button onclick="rollQuickD6(4)">4d6</button>
+                <button onclick="rollQuickD6(5)">5d6</button>
+                <button onclick="rollQuickD6(6)">6d6</button>
+                <button onclick="rollQuickD6(7)">7d6</button>
+                <button onclick="rollQuickD6(8)">8d6</button>
+                <button onclick="rollQuickD6(9)">9d6</button>
+                <button onclick="rollQuickD6(10)">10d6</button>
+                <button onclick="rollQuickD6(11)">11d6</button>
+                <button onclick="rollQuickD6(12)">12d6</button>
+                <button onclick="rollQuickD6(13)">13d6</button>
+                <button onclick="rollQuickD6(14)">14d6</button>
+                <button onclick="rollQuickD6(15)">15d6</button>
+            </div>
 
-        <div class="dice-controls">
-            <input type="number" id="dice-count" min="1" max="20" value="1" title="Cant. de dados">
-            <button onclick="rollD6()">¡Lanzar!</button>
+            <div class="dice-controls">
+                <input type="number" id="dice-count" min="1" max="20" value="1" title="Cant. de dados">
+                <button onclick="rollD6()">¡Lanzar!</button>
+            </div>
+            <div class="dice-results" id="dice-results"></div>
         </div>
-        <div class="dice-results" id="dice-results"></div>
     </div>
 
     <script>
@@ -619,7 +642,9 @@
                                 </div>
                             </div>
                             <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                <label>Armadura</label>
+                                <label style="display:flex; justify-content: space-between; align-items:center; margin-bottom:0.3rem;">
+                                    Armadura
+                                </label>
                                 <div style="display:flex; align-items:center; gap: 0.5rem;">
                                     <input type="number" value="${char.armor}" oninput="updateCharProp(${cIndex}, 'armor', this.value)" style="width: 100%;">
                                     <button onclick="rollArmor(${cIndex})" class="btn-roll-stat" title="Tirar dados de Armadura (Éxitos a 4+)" style="width: auto; background: var(--bg); border: 1px solid var(--border); padding: 0.5rem 0.6rem; margin: 0;">🎲</button>
@@ -895,44 +920,47 @@
                 <div class="combat-module-box" style="text-align: left; padding: 1rem;">
                     <h4 style="margin-bottom: 1rem; color:var(--primary); font-size:1.1rem; text-align:center;">${title}</h4>
                     
+                    <!-- ENEMIGO -->
                     <div style="padding: 0.5rem; background: rgba(231, 76, 60, 0.05); border-radius: 4px; border: 1px solid rgba(231, 76, 60, 0.3);">
                         <strong style="color: var(--secondary); font-size: 0.9rem;">Ejército Enemigo</strong>
                         
-                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: var(--secondary);">⚔️ Frente (Combate)</div>
-                        <div style="display:flex; gap:5px; margin-bottom:5px; align-items:center;">
-                            <input type="text" placeholder="Nombre" value="${data.enemyFrontName}" oninput="state.battlefield['${flankId}'].enemyFrontName = this.value; autoSave();" style="flex:2; font-size:0.85rem; padding:0.3rem;">
-                            <span title="Fuerza">⚔️</span>
-                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemyFrontForce}" oninput="state.battlefield['${flankId}'].enemyFrontForce = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
-                            <span title="Moral">🚩</span>
-                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemyFrontMorale}" oninput="state.battlefield['${flankId}'].enemyFrontMorale = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
-                            <button onclick="rollMorale('${flankId}', 'enemy')" title="Chequeo Moral (Manual)" style="background:#e74c3c; color:white; border:none; border-radius:4px; padding:0 8px; cursor:pointer; height:28px;">🚩</button>
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; margin-bottom:2px; color: var(--secondary);">⚔️ Frente (Combate)</div>
+                        <div style="display: grid; grid-template-columns: minmax(50px, 1fr) auto 45px auto 45px 36px; gap: 4px; align-items: center; margin-bottom: 5px;">
+                            <input type="text" placeholder="Nombre" value="${data.enemyFrontName}" oninput="state.battlefield['${flankId}'].enemyFrontName = this.value; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem; box-sizing: border-box;">
+                            <span title="Fuerza" style="font-size: 0.9rem; text-align: center;">⚔️</span>
+                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemyFrontForce}" oninput="state.battlefield['${flankId}'].enemyFrontForce = parseInt(this.value) || 0; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem 0; text-align:center; box-sizing: border-box;">
+                            <span title="Moral" style="font-size: 0.9rem; text-align: center;">🚩</span>
+                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemyFrontMorale}" oninput="state.battlefield['${flankId}'].enemyFrontMorale = parseInt(this.value) || 0; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem 0; text-align:center; box-sizing: border-box;">
+                            <button onclick="rollMorale('${flankId}', 'enemy')" title="Chequeo Moral" style="width: 100%; height: 32px; background:#ffcccb; color:white; border:none; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; margin:0; box-sizing: border-box; font-size:14px; -webkit-appearance:none; appearance:none;">🚩</button>
                         </div>
                         
-                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
-                        <div style="display:flex; gap:5px; align-items:center;">
-                            <input type="text" placeholder="Nombre" value="${data.enemySupportName}" oninput="state.battlefield['${flankId}'].enemySupportName = this.value; autoSave();" style="flex:2; font-size:0.85rem; padding:0.3rem;">
-                            <span title="Fuerza" style="opacity:0.6;">⚔️</span>
-                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemySupportForce}" oninput="state.battlefield['${flankId}'].enemySupportForce = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
-                            <span title="Moral" style="opacity:0.6;">🚩</span>
-                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemySupportMorale}" oninput="state.battlefield['${flankId}'].enemySupportMorale = parseInt(this.value) || 0; autoSave();" style="flex:1; font-size:0.85rem; padding:0.3rem; max-width: 45px;">
-                            <div style="width:28px;"></div> </div>
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; margin-bottom:2px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
+                        <div style="display: grid; grid-template-columns: minmax(50px, 1fr) auto 45px auto 45px 36px; gap: 4px; align-items: center;">
+                            <input type="text" placeholder="Nombre" value="${data.enemySupportName}" oninput="state.battlefield['${flankId}'].enemySupportName = this.value; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem; box-sizing: border-box;">
+                            <span title="Fuerza" style="opacity:0.6; font-size: 0.9rem; text-align: center;">⚔️</span>
+                            <input type="number" placeholder="Fz" title="Fuerza" value="${data.enemySupportForce}" oninput="state.battlefield['${flankId}'].enemySupportForce = parseInt(this.value) || 0; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem 0; text-align:center; box-sizing: border-box;">
+                            <span title="Moral" style="opacity:0.6; font-size: 0.9rem; text-align: center;">🚩</span>
+                            <input type="number" placeholder="Mo" title="Moral" value="${data.enemySupportMorale}" oninput="state.battlefield['${flankId}'].enemySupportMorale = parseInt(this.value) || 0; autoSave();" style="width: 100%; font-size:0.85rem; padding:0.3rem 0; text-align:center; box-sizing: border-box;">
+                            <div></div> <!-- Espaciador -->
+                        </div>
                     </div>
                     
                     <div style="font-weight: bold; margin: 0.8rem 0; color: #7f8c8d; font-size:1.2rem; text-align:center;">VS</div>
                     
+                    <!-- ALIADO -->
                     <div style="padding: 0.5rem; background: var(--surface); border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 1rem;">
                         <strong style="color: var(--primary); font-size: 0.9rem;">Ejército Aliado</strong>
                         
-                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: var(--primary);">⚔️ Frente (Combate)</div>
-                        <div style="display:flex; gap:5px; margin-bottom:5px; align-items:center;">
-                            <select onchange="assignAllyToBattlefield('${flankId}', 'front', this.value)" style="flex:1; font-size:0.85rem; padding:0.3rem;">${optionsFront}</select>
-                            <button onclick="rollMorale('${flankId}', 'ally')" title="Chequeo Moral (Manual)" style="background:var(--primary); color:white; border:none; border-radius:4px; padding:0 8px; cursor:pointer; height: 28px;">🚩</button>
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; margin-bottom:2px; color: var(--primary);">⚔️ Frente (Combate)</div>
+                        <div style="display: grid; grid-template-columns: minmax(100px, 1fr) 36px; gap: 4px; align-items: center; margin-bottom: 5px;">
+                            <select onchange="assignAllyToBattlefield('${flankId}', 'front', this.value)" style="width: 100%; font-size:0.85rem; padding:0.3rem; box-sizing: border-box;">${optionsFront}</select>
+                            <button onclick="rollMorale('${flankId}', 'ally')" title="Chequeo Moral" style="width: 100%; height: 32px; background:var(--primary); color:white; border:none; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; margin:0; box-sizing: border-box; font-size:14px; -webkit-appearance:none; appearance:none;">🚩</button>
                         </div>
                         
-                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
-                        <div style="display:flex; gap:5px; align-items:center;">
-                            <select onchange="assignAllyToBattlefield('${flankId}', 'support', this.value)" style="flex:1; font-size:0.85rem; padding:0.3rem;">${optionsSupport}</select>
-                            <div style="width:28px;"></div>
+                        <div style="font-size: 0.8rem; font-weight: bold; margin-top:5px; margin-bottom:2px; color: #7f8c8d;">🛡️ Apoyo (Reserva)</div>
+                        <div style="display: grid; grid-template-columns: minmax(100px, 1fr) 36px; gap: 4px; align-items: center;">
+                            <select onchange="assignAllyToBattlefield('${flankId}', 'support', this.value)" style="width: 100%; font-size:0.85rem; padding:0.3rem; box-sizing: border-box;">${optionsSupport}</select>
+                            <div></div>
                         </div>
                     </div>
                     
@@ -1034,64 +1062,121 @@
         }
 
         // --- WIDGET DRAG & RESIZE ---
+        function toggleDiceWidget() {
+            const widget = document.getElementById('dice-widget');
+            const btn = document.getElementById('btn-toggle-dice');
+            
+            // 1. Antes de aplicar el minimizado, guardamos la base original
+            const rectBefore = widget.getBoundingClientRect();
+            const bottomBefore = rectBefore.bottom;
+
+            const isMin = widget.classList.toggle('minimized');
+            
+            if (isMin) {
+                btn.innerText = '➕';
+                if (widget.style.height) widget.dataset.oldHeight = widget.style.height;
+                widget.style.height = ''; 
+            } else {
+                btn.innerText = '➖';
+                if (widget.dataset.oldHeight) widget.style.height = widget.dataset.oldHeight;
+            }
+
+            // 2. Si el widget se ha arrastrado (su top está definido por JS y no por CSS bottom)
+            if (widget.style.top && widget.style.top !== 'auto') {
+                // Forzar al navegador a recalcular el tamaño pidiendo el offsetHeight
+                const newHeight = widget.offsetHeight; 
+                let newTop = bottomBefore - newHeight;
+                if (newTop < 0) newTop = 0; // Evitar que se suba fuera de la pantalla
+                widget.style.top = newTop + 'px';
+            }
+        }
+
         function initDiceWidget() {
             const widget = document.getElementById('dice-widget');
-            const header = widget.querySelector('h3');
+            const headerTitle = widget.querySelector('h3 span');
             
             // Drag Logic
-            header.addEventListener('mousedown', e => {
+            const onDragStart = (e) => {
+                if (e.target.tagName.toLowerCase() === 'button') return; 
                 e.preventDefault();
-                let startX = e.clientX; let startY = e.clientY;
+                let isTouch = e.type === 'touchstart';
+                let startX = isTouch ? e.touches[0].clientX : e.clientX; 
+                let startY = isTouch ? e.touches[0].clientY : e.clientY;
                 const rect = widget.getBoundingClientRect();
                 
-                if (widget.style.bottom) {
-                    widget.style.top = rect.top + 'px'; widget.style.left = rect.left + 'px';
-                    widget.style.bottom = 'auto'; widget.style.right = 'auto';
+                if (!widget.style.top || widget.style.top === 'auto') {
+                    widget.style.top = rect.top + 'px'; 
+                    widget.style.left = rect.left + 'px';
+                    widget.style.bottom = 'auto'; 
+                    widget.style.right = 'auto';
                 }
 
-                function mouseMove(e) {
-                    widget.style.top = (widget.offsetTop + e.clientY - startY) + 'px';
-                    widget.style.left = (widget.offsetLeft + e.clientX - startX) + 'px';
-                    startX = e.clientX; startY = e.clientY;
+                function onDragMove(e) {
+                    let moveX = isTouch ? e.touches[0].clientX : e.clientX;
+                    let moveY = isTouch ? e.touches[0].clientY : e.clientY;
+                    widget.style.top = (widget.offsetTop + moveY - startY) + 'px';
+                    widget.style.left = (widget.offsetLeft + moveX - startX) + 'px';
+                    startX = moveX; startY = moveY;
                 }
-                function mouseUp() { document.removeEventListener('mousemove', mouseMove); document.removeEventListener('mouseup', mouseUp); }
-                document.addEventListener('mousemove', mouseMove); document.addEventListener('mouseup', mouseUp);
-            });
+                function onDragEnd() { 
+                    document.removeEventListener(isTouch ? 'touchmove' : 'mousemove', onDragMove); 
+                    document.removeEventListener(isTouch ? 'touchend' : 'mouseup', onDragEnd); 
+                }
+                document.addEventListener(isTouch ? 'touchmove' : 'mousemove', onDragMove, {passive: false}); 
+                document.addEventListener(isTouch ? 'touchend' : 'mouseup', onDragEnd);
+            };
 
-            // Resize Logic a 4 esquinas
+            headerTitle.addEventListener('mousedown', onDragStart);
+            headerTitle.addEventListener('touchstart', onDragStart, {passive: false});
+
+            // Resize Logic
             let isResizing = false; let currentHandle = null;
-            let startX, startY, startW, startH, startTop, startLeft;
+            let startX, startY, startW, startH, startTop, startLeft, isResizeTouch;
 
             document.querySelectorAll('.resizer').forEach(handle => {
-                handle.addEventListener('mousedown', e => {
+                const onResizeStart = (e) => {
                     e.preventDefault(); e.stopPropagation();
                     isResizing = true; currentHandle = e.target.className.split(' ')[1];
-                    startX = e.clientX; startY = e.clientY;
+                    isResizeTouch = e.type === 'touchstart';
+                    startX = isResizeTouch ? e.touches[0].clientX : e.clientX; 
+                    startY = isResizeTouch ? e.touches[0].clientY : e.clientY;
                     
                     const rect = widget.getBoundingClientRect();
                     startW = rect.width; startH = rect.height; startTop = rect.top; startLeft = rect.left;
 
-                    if (widget.style.bottom) {
-                        widget.style.top = startTop + 'px'; widget.style.left = startLeft + 'px';
-                        widget.style.bottom = 'auto'; widget.style.right = 'auto';
+                    if (!widget.style.top || widget.style.top === 'auto') {
+                        widget.style.top = startTop + 'px'; 
+                        widget.style.left = startLeft + 'px';
+                        widget.style.bottom = 'auto'; 
+                        widget.style.right = 'auto';
                     }
-                    document.addEventListener('mousemove', resizeMove); document.addEventListener('mouseup', resizeUp);
-                });
+                    document.addEventListener(isResizeTouch ? 'touchmove' : 'mousemove', onResizeMove, {passive: false}); 
+                    document.addEventListener(isResizeTouch ? 'touchend' : 'mouseup', onResizeEnd);
+                };
+                handle.addEventListener('mousedown', onResizeStart);
+                handle.addEventListener('touchstart', onResizeStart, {passive: false});
             });
 
-            function resizeMove(e) {
+            function onResizeMove(e) {
                 if (!isResizing) return;
+                let moveX = isResizeTouch ? e.touches[0].clientX : e.clientX;
+                let moveY = isResizeTouch ? e.touches[0].clientY : e.clientY;
+
                 let newW = startW, newH = startH, newTop = startTop, newLeft = startLeft;
 
-                if (currentHandle.includes('r')) newW = startW + (e.clientX - startX);
-                if (currentHandle.includes('l')) { newW = startW - (e.clientX - startX); newLeft = startLeft + (e.clientX - startX); }
-                if (currentHandle.includes('b')) newH = startH + (e.clientY - startY);
-                if (currentHandle.includes('t')) { newH = startH - (e.clientY - startY); newTop = startTop + (e.clientY - startY); }
+                if (currentHandle.includes('r')) newW = startW + (moveX - startX);
+                if (currentHandle.includes('l')) { newW = startW - (moveX - startX); newLeft = startLeft + (moveX - startX); }
+                if (currentHandle.includes('b')) newH = startH + (moveY - startY);
+                if (currentHandle.includes('t')) { newH = startH - (moveY - startY); newTop = startTop + (moveY - startY); }
 
                 if (newW > 250) { widget.style.width = newW + 'px'; if (currentHandle.includes('l')) widget.style.left = newLeft + 'px'; }
                 if (newH > 200) { widget.style.height = newH + 'px'; if (currentHandle.includes('t')) widget.style.top = newTop + 'px'; }
             }
-            function resizeUp() { isResizing = false; document.removeEventListener('mousemove', resizeMove); document.removeEventListener('mouseup', resizeUp); }
+            function onResizeEnd() { 
+                isResizing = false; 
+                document.removeEventListener(isResizeTouch ? 'touchmove' : 'mousemove', onResizeMove); 
+                document.removeEventListener(isResizeTouch ? 'touchend' : 'mouseup', onResizeEnd); 
+            }
         }
 
         // --- GUARDAR Y CARGAR ---
